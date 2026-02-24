@@ -1,10 +1,42 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MetaDev - Digital Product Agency</title>
+    <title>Westone - We make interfaces</title>
+
+    <!-- SEO -->
+    <meta name="description" content="Since 2018, we've helped the most innovative startups and reputable brands design, build, and ship products worth talking about." />
+    <meta name="keywords" content="design, development, interfaces, web design, branding, Westone" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://westone-hq.github.io/" />
+    <meta property="og:title" content="Westone - We make interfaces" />
+    <meta property="og:description" content="Since 2018, we've helped the most innovative startups and reputable brands design, build, and ship products worth talking about." />
+    <meta property="og:site_name" content="Westone" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Westone - We make interfaces" />
+    <meta name="twitter:description" content="Since 2018, we've helped the most innovative startups and reputable brands design, build, and ship products worth talking about." />
+
+    <!-- GitHub Pages SPA 리다이렉트 처리 -->
+    <script>
+      (function(l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function(s) {
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">

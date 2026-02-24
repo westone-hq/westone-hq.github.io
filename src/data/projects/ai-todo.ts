@@ -11,7 +11,7 @@ import dateTimeSetImg from '../../assets/ai-todo/date-time-set.png';
 import alertImg from '../../assets/ai-todo/alert.png';
 
 export const AIToDoProject: Project = {
-    id: '5',
+    id: 'ai-todo',
     name: 'AI ToDo',
     client: '자체 프로젝트',
     description: `AI 기반 자연어 입력을 지원하는
@@ -35,7 +35,7 @@ export const AIToDoProject: Project = {
 };
 
 export const AIToDoDetails: ProjectDetailContent = {
-    id: '5',
+    id: 'ai-todo',
     heroContainImages: true,
     visionImageContain: true,
 

@@ -5,26 +5,14 @@ export { freeKioskProject, freeKioskDetails } from './westone-kiosk';
 export { ootdProject, ootdDetails } from './ootd';
 export { ballpangProject, ballpangDetails } from './ballpang';
 export { recyclerProject, recyclerDetails } from './recycler';
-export { upworkProject, upworkDetails } from './upwork';
-export { atlanticProject, atlanticDetails } from './atlantic';
 export { AIToDoProject, AIToDoDetails } from './ai-todo';
-export { uberProject, uberDetails } from './uber';
-export { calvinKleinProject, calvinKleinDetails } from './calvin-klein';
-export { pitchProject, pitchDetails } from './pitch';
-export { headspaceProject, headspaceDetails } from './headspace';
 
 // Re-import for aggregation
 import { freeKioskProject, freeKioskDetails } from './westone-kiosk';
 import { ootdProject, ootdDetails } from './ootd';
 import { ballpangProject, ballpangDetails } from './ballpang';
 import { recyclerProject, recyclerDetails } from './recycler';
-import { upworkDetails } from './upwork';
-import { atlanticDetails } from './atlantic';
 import { AIToDoProject, AIToDoDetails } from './ai-todo';
-import { uberDetails } from './uber';
-import { calvinKleinDetails } from './calvin-klein';
-import { pitchDetails } from './pitch';
-import { headspaceDetails } from './headspace';
 
 // Aggregated exports
 export const PROJECTS: Project[] = [
@@ -33,12 +21,6 @@ export const PROJECTS: Project[] = [
     ballpangProject,
     recyclerProject,
     AIToDoProject,
-    // upworkProject,
-    // atlanticProject,
-    // uberProject,
-    // calvinKleinProject,
-    // pitchProject,
-    // headspaceProject,
 ];
 
 export const PROJECT_DETAILS: Record<string, ProjectDetailContent> = {
@@ -46,13 +28,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetailContent> = {
     'ootd': ootdDetails,
     'ballpang': ballpangDetails,
     'recycler': recyclerDetails,
-    '3': upworkDetails,
-    '4': atlanticDetails,
-    '5': AIToDoDetails,
-    '6': uberDetails,
-    '7': calvinKleinDetails,
-    '8': pitchDetails,
-    '9': headspaceDetails,
+    'ai-todo': AIToDoDetails,
 };
 
 export const DEFAULT_PROJECT: Project = {
