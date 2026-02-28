@@ -34,14 +34,14 @@ export const SpotlightReveal: React.FC<{
 
     return (
         <div ref={containerRef} className={`relative overflow-hidden group ${className}`}>
-            {/* 어두운 기본 레이어 */}
-            <div className="opacity-[0.18] group-hover:opacity-15 transition-opacity duration-700 select-none">
+            {/* 기본 레이어: 모바일에서는 full opacity, 데스크탑에서는 어둡게 */}
+            <div className="opacity-100 md:opacity-[0.18] md:group-hover:opacity-15 transition-opacity duration-700 select-none">
                 {children}
             </div>
 
-            {/* 스포트라이트로 밝혀지는 레이어 */}
+            {/* 스포트라이트로 밝혀지는 레이어 - 데스크탑에서만 */}
             <motion.div
-                className="absolute inset-0 pointer-events-none"
+                className="hidden md:block absolute inset-0 pointer-events-none"
                 style={{
                     WebkitMaskImage: maskImage,
                     maskImage: maskImage,
@@ -52,9 +52,9 @@ export const SpotlightReveal: React.FC<{
                 </div>
             </motion.div>
 
-            {/* 커서 링 */}
+            {/* 커서 링 - 데스크탑에서만 */}
             <motion.div
-                className="absolute w-5 h-5 border border-white/40 rounded-full pointer-events-none z-50"
+                className="hidden md:block absolute w-5 h-5 border border-white/40 rounded-full pointer-events-none z-50"
                 style={{
                     x: spotlightX,
                     y: spotlightY,

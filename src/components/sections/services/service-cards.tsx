@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useCursor } from "@/context/cursor-context";
 
 const services = [
@@ -29,6 +29,47 @@ const services = [
     }
 ];
 
+// 모바일: 스크롤 기반 자동 아코디언
+const MobileServiceItem: React.FC<{ service: typeof services[0] }> = ({ service }) => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { margin: "-20% 0px -55% 0px" });
+
+    return (
+        <div ref={ref} className="border-b border-gray-800">
+            <div className="py-8">
+                <h3 className={`text-2xl font-serif leading-snug transition-all duration-500 ${isInView ? 'italic text-white' : 'text-gray-400'}`}>
+                    {service.title}
+                </h3>
+                <p className={`text-sm mt-3 leading-relaxed whitespace-pre-wrap transition-colors duration-300 ${isInView ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {service.description}
+                </p>
+            </div>
+
+            <AnimatePresence initial={false}>
+                {isInView && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                        className="overflow-hidden"
+                    >
+                        <div className="pb-6">
+                            <div className="rounded-xl overflow-hidden aspect-video">
+                                <img
+                                    src={service.image}
+                                    className="w-full h-full object-cover"
+                                    alt={service.title}
+                                />
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
 const ServiceCards = () => {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const { setCursorType } = useCursor();
@@ -40,7 +81,15 @@ const ServiceCards = () => {
                     <h2 className="serif text-4xl md:text-5xl text-white">Our Expertise</h2>
                 </div>
 
-                <div className="flex flex-col border-t border-gray-800">
+                {/* 모바일: 스크롤 아코디언 */}
+                <div className="block md:hidden border-t border-gray-800">
+                    {services.map((service) => (
+                        <MobileServiceItem key={service.id} service={service} />
+                    ))}
+                </div>
+
+                {/* 데스크톱: 호버 인터랙션 */}
+                <div className="hidden md:flex flex-col border-t border-gray-800">
                     {services.map((service, index) => {
                         const isHovered = hoveredIndex === index;
 
@@ -115,7 +164,7 @@ const ServiceCards = () => {
                             </motion.div>
                         );
                     })}
-                </div>
+                </div>{/* end 데스크톱 */}
             </div>
         </section>
     );

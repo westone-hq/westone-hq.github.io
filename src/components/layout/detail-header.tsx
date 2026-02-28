@@ -34,7 +34,7 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({ title, type, stage, 
           `}
                 >
                     {/* Main Title */}
-                    <h1 className="text-[6rem] md:text-[10rem] lg:text-[12rem] leading-[0.85] font-serif mb-16 md:mb-24 break-words">
+                    <h1 className="text-[3.5rem] sm:text-[5rem] md:text-[8rem] lg:text-[12rem] leading-[0.85] font-serif mb-12 md:mb-24 break-words">
                         {title}
                     </h1>
 

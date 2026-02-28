@@ -70,14 +70,10 @@ body {
   }
 }
 
-/* Touch devices and small screens without mouse show default cursor */
+/* Touch devices - hide cursor entirely */
 @media (pointer: coarse) {
-  body {
-    cursor: auto;
-  }
-
-  * {
-    cursor: auto !important;
+  body, * {
+    cursor: none !important;
   }
 }
 

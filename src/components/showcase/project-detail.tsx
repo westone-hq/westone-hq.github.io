@@ -7,7 +7,7 @@ import { ScrollProgressiveReveal } from '@/components/interactive/progressive-re
 import { InteractiveFeatureStrips } from '@/components/interactive/feature-strips';
 import { StickyScrollSection } from '@/components/interactive/sticky-scroll';
 import { InteractiveTypographicList } from '@/components/interactive/typographic-list';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Instagram } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { ProjectDetailContent } from '../../types';
 import type { Project } from '../../types';
@@ -72,7 +72,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
             />
 
             {/* Core Pillars */}
-            <section className="py-32 bg-black">
+            <section className="py-16 md:py-32 bg-black">
                 <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-16">
                     <ScrollReveal>
                         <span className="block text-sm font-semibold uppercase tracking-wider mb-6 text-gray-400">Core Pillars</span>
@@ -101,9 +101,9 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
             />
 
             {/* Discovery Section */}
-            <section className="pt-32 pb-16 bg-neutral-900">
+            <section className="pt-16 pb-10 md:pt-32 md:pb-16 bg-neutral-900">
                 <div className="max-w-[1400px] mx-auto px-6 md:px-12">
-                    <ScrollReveal className="mb-32">
+                    <ScrollReveal className="mb-12 md:mb-32">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
                             <div>
                                 <span className="block text-sm font-semibold uppercase tracking-wider mb-6 text-gray-400">{details.feature.subheading}</span>
@@ -122,9 +122,9 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
 
 
             {/* Stats / Impact Section */}
-            <section className="py-32 px-6 md:px-12 max-w-[1400px] mx-auto">
+            <section className="py-16 md:py-32 px-6 md:px-12 max-w-[1400px] mx-auto">
                 <ScrollReveal>
-                    <h3 className="text-3xl font-serif mb-24">Immediate disruption</h3>
+                    <h3 className="text-3xl font-serif mb-12 md:mb-24">Immediate disruption</h3>
                 </ScrollReveal>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-white/10 pt-12">
@@ -154,36 +154,39 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
 
             {/* NEXT CASE FOOTER */}
             <section className="relative h-[80vh] w-full bg-neutral-900 border-t border-white/10 overflow-hidden group">
-                {/* Background Image that reveals on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-700 ease-in-out z-0">
+                {/* Background Image - 모바일: 기본 표시 / 데스크탑: 호버 시 표시 */}
+                <div className="absolute inset-0 opacity-30 md:opacity-0 md:group-hover:opacity-40 transition-opacity duration-700 ease-in-out z-0">
                     {(() => {
                         const nextDetails = PROJECT_DETAILS[nextProject.id];
                         const hero = nextDetails ? nextDetails.media.hero : nextProject.image;
                         const heroSrc = Array.isArray(hero) ? hero[0] : hero;
-                        return <img src={heroSrc} alt="Next Case" className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-[1.5s]" />;
+                        return <img src={heroSrc} alt="Next Case" className="w-full h-full object-cover scale-100 md:scale-105 md:group-hover:scale-100 transition-transform duration-[1.5s]" />;
                     })()}
                 </div>
                 <div className="absolute inset-0 bg-black/60 z-1 pointer-events-none"></div>
 
                 <div className="relative z-20 flex flex-col items-center justify-center h-full w-full text-center cursor-pointer" onClick={onNextProject}>
-                    <span className="text-sm font-mono text-gray-500 mb-8 tracking-widest uppercase group-hover:text-white transition-colors">Next Case Study</span>
+                    <span className="text-sm font-mono text-white md:text-gray-500 mb-8 tracking-widest uppercase md:group-hover:text-white transition-colors">Next Case Study</span>
                     <h2 className="text-[10vw] font-serif leading-none mb-4 group-hover:tracking-wide transition-all duration-700">
                         {nextProject.name}
                     </h2>
-                    <div className="flex items-center gap-4 text-xl opacity-0 translate-y-8 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                    <div className="flex items-center gap-4 text-xl opacity-100 md:opacity-0 md:translate-y-8 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-500 delay-100">
                         <span>View Case Study</span>
                         <ArrowUpRight className="w-6 h-6" />
                     </div>
                 </div>
 
                 {/* Standard Footer Links inside the Next Case area */}
-                <div className="absolute bottom-0 left-0 right-0 p-8 flex justify-between items-end z-30 mix-blend-difference text-white">
-                    <div className="text-sm text-gray-400">
-                        &copy; 2024 Metalab Clone.
-                    </div>
-                    <div className="flex gap-6 text-sm">
-                        <button className="hover:text-white/70 transition-colors">Instagram</button>
-                        <button className="hover:text-white/70 transition-colors">Twitter</button>
+                <div className="absolute bottom-0 left-0 right-0 p-8 flex justify-end items-end z-30 mix-blend-difference text-white">
+                    <div className="flex gap-5">
+                        <button className="hover:text-white/70 transition-colors">
+                            <Instagram className="w-5 h-5" />
+                        </button>
+                        <button className="hover:text-white/70 transition-colors">
+                            <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </section>

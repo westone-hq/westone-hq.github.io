@@ -1,5 +1,6 @@
 import React from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { Instagram } from 'lucide-react';
 import { ShowcaseDisplay } from '@/components/showcase';
 import { HeroSection } from '@/components/sections/hero';
 import { Sidebar } from '@/components/layout/sidebar';
@@ -34,6 +35,18 @@ export const HomePage: React.FC = () => {
         onHoverProject={setHoveredProjectId}
         onOpenProject={openProject}
       />
+
+      {/* 소셜 아이콘 - 우측 하단 고정 */}
+      <div className="fixed bottom-10 right-6 z-20 flex gap-4 text-white/60">
+        <button className="hover:text-white transition-colors">
+          <Instagram className="w-5 h-5" />
+        </button>
+        <button className="hover:text-white transition-colors">
+          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+        </button>
+      </div>
     </>
   );
 };

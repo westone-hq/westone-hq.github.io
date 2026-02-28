@@ -71,7 +71,7 @@ ${formData.message}`
         );
 
         // Open mailto link
-        window.location.href = `mailto:namespace.nada@gmail.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:westone251113@gmail.com?subject=${subject}&body=${body}`;
 
         setIsSubmitting(false);
         setIsSuccess(true);
@@ -130,8 +130,8 @@ ${formData.message}`
 
                     <div className="mt-12 pt-8 border-t border-neutral-800">
                         <p className="text-white font-medium mb-2">Direct Contact</p>
-                        <a href="mailto:namespace.nada@gmail.com" className="text-neutral-500 hover:text-white transition-colors duration-300">
-                            namespace.nada@gmail.com
+                        <a href="mailto:westone251113@gmail.com" className="text-neutral-500 hover:text-white transition-colors duration-300">
+                            westone251113@gmail.com
                         </a>
                     </div>
                 </div>
