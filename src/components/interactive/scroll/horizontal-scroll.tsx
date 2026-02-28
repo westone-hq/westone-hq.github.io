@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, MotionValue, animate } from 'framer-motion';
 
 const baseItems = [
@@ -54,6 +54,78 @@ const ScrollItem: React.FC<ScrollItemProps> = ({ item, index, x, itemWidth, gap,
                 <h3 className="text-2xl font-light text-white">{item.title}</h3>
             </div>
         </motion.div>
+    );
+};
+
+// 모바일 전용: 스냅 캐러셀 (카드 하나 정면 표시 + 자동 슬라이드)
+const MobileCarousel: React.FC = () => {
+    const [activeIndex, setActiveIndex] = useState(0);
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const isUserScrolling = useRef(false);
+    const scrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const scrollToIndex = useCallback((index: number) => {
+        if (!scrollRef.current) return;
+        const cardWidth = scrollRef.current.offsetWidth * 0.78 + 16;
+        scrollRef.current.scrollTo({ left: cardWidth * index, behavior: 'smooth' });
+    }, []);
+
+    const handleScroll = useCallback(() => {
+        if (!scrollRef.current) return;
+        const { scrollLeft, offsetWidth } = scrollRef.current;
+        const cardWidth = offsetWidth * 0.78 + 16;
+        setActiveIndex(Math.round(scrollLeft / cardWidth));
+
+        // 사용자 스크롤 감지 → 자동 슬라이드 잠시 멈춤
+        isUserScrolling.current = true;
+        if (scrollTimer.current) clearTimeout(scrollTimer.current);
+        scrollTimer.current = setTimeout(() => {
+            isUserScrolling.current = false;
+        }, 2000);
+    }, []);
+
+    // 자동 슬라이드
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (isUserScrolling.current) return;
+            setActiveIndex(prev => {
+                const next = (prev + 1) % baseItems.length;
+                scrollToIndex(next);
+                return next;
+            });
+        }, 2500);
+        return () => clearInterval(interval);
+    }, [scrollToIndex]);
+
+    return (
+        <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-4 pb-4"
+            style={{ paddingInline: '11vw', scrollPaddingInline: '11vw', touchAction: 'pan-x' }}
+        >
+            {baseItems.map((item, i) => (
+                <motion.div
+                    key={item.id}
+                    className="relative snap-center flex-shrink-0 rounded-2xl overflow-hidden"
+                    style={{ width: '78vw', height: '52vh' }}
+                    animate={{
+                        scale: activeIndex === i ? 1 : 0.9,
+                        opacity: activeIndex === i ? 1 : 0.45,
+                    }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                >
+                    <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-full h-full object-cover pointer-events-none"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 to-transparent">
+                        <h3 className="text-xl font-light text-white">{item.title}</h3>
+                    </div>
+                </motion.div>
+            ))}
+        </div>
     );
 };
 
@@ -129,12 +201,17 @@ const HorizontalScroll = () => {
                 <h2 className="serif text-3xl md:text-5xl text-white">Our Platforms</h2>
             </div>
 
+            {/* 모바일: 스냅 캐러셀 */}
+            <div className="block md:hidden">
+                <MobileCarousel />
+            </div>
+
+            {/* 데스크톱: 기존 무한 자동 슬라이드 */}
             <div
                 ref={containerRef}
-                className="w-full h-[40vh] md:h-[50vh] relative touch-none"
+                className="hidden md:block w-full h-[50vh] relative touch-none"
                 data-hover="true"
             >
-                {/* Visual Layer - Centered */}
                 <div className="absolute top-0 left-1/2 w-full h-full pointer-events-none z-20">
                     {DISPLAY_ITEMS.map((item, index) => (
                         <ScrollItem

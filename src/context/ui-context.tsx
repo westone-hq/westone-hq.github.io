@@ -28,9 +28,16 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // UI State
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
-  const [isTouchDevice] = useState(() =>
+  const [isTouchDevice, setIsTouchDevice] = useState(() =>
     window.matchMedia('(pointer: coarse)').matches
   );
+
+  useEffect(() => {
+    const mq = window.matchMedia('(pointer: coarse)');
+    const handler = (e: MediaQueryListEvent) => setIsTouchDevice(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   // Hover State
   const [hoveredProjectId, setHoveredProjectId] = useState<string | null>(null);

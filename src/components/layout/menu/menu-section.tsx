@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Project, MenuItem, NewsItem } from '@/types';
 import { MENU_ITEMS } from '@/data/constants/menu';
@@ -71,7 +71,7 @@ interface MenuSectionProps {
 // Mobile News Card for horizontal carousel
 const MobileNewsCard: React.FC<{ news: NewsItem; index: number }> = ({ news, index }) => (
     <motion.div
-        className="flex-shrink-0 w-[200px] bg-white border border-gray-100 shadow-sm rounded-xl p-3 cursor-pointer"
+        className="relative flex-shrink-0 w-[200px] bg-white border border-gray-100 shadow-sm rounded-xl p-3 cursor-pointer"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2 + (index * 0.05) }}
@@ -149,7 +149,7 @@ const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenC
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.05 }}
                 >
-                    <span className="font-serif text-2xl text-gray-900 underline underline-offset-4">Case Studies</span>
+                    <span className="font-serif text-2xl text-gray-900">Case Studies</span>
                 </motion.a>
                 {MENU_ITEMS.map((item: MenuItem, index: number) => (
                     <MenuLink key={item.label} item={item} index={index + 1} onOpenContact={onOpenContact} onOpenNews={onOpenNews} onOpenWhatWeDo={onOpenWhatWeDo} />
@@ -157,7 +157,7 @@ const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenC
             </div>
 
             {/* Spacer to push news to bottom */}
-            <div className="flex-1 min-h-[60px]" />
+            <div className="flex-1 min-h-[16px]" />
 
             {/* News Carousel - Bottom */}
             <div className="pb-6">
@@ -165,10 +165,15 @@ const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenC
                     <span className="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Latest News</span>
                     <span className="text-[10px] text-gray-400">Scroll →</span>
                 </div>
-                <div className="flex gap-3 overflow-x-auto no-scrollbar px-6 pb-2">
+                <div
+                    className="flex gap-3 overflow-x-auto no-scrollbar px-6 pb-2"
+                    style={{ touchAction: 'pan-x', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
+                >
                     {NEWS_ITEMS.map((news: NewsItem, i: number) => (
                         <MobileNewsCard key={news.id} news={news} index={i} />
                     ))}
+                    {/* 마지막 아이템 우측 여백 */}
+                    <div className="flex-shrink-0 w-3" />
                 </div>
             </div>
         </motion.div>
@@ -177,6 +182,26 @@ const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenC
 
 // Desktop Menu Layout
 const DesktopMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onProjectHover, onOpenProject, onOpenContact, onOpenNews, onOpenWhatWeDo }) => {
+    const newsScrollRef = useRef<HTMLDivElement>(null);
+    const isDragging = useRef(false);
+    const startY = useRef(0);
+    const startScrollTop = useRef(0);
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        isDragging.current = true;
+        startY.current = e.clientY;
+        startScrollTop.current = newsScrollRef.current?.scrollTop || 0;
+    };
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging.current) return;
+        e.preventDefault();
+        const delta = e.clientY - startY.current;
+        if (newsScrollRef.current) {
+            newsScrollRef.current.scrollTop = startScrollTop.current - delta;
+        }
+    };
+    const handleMouseUp = () => { isDragging.current = false; };
+
     return (
         <motion.div
             className="absolute inset-0 z-20 flex flex-col pt-24 pb-8 px-6 md:px-12 w-full h-full"
@@ -243,7 +268,14 @@ const DesktopMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onProj
                         <span className="text-[10px] text-gray-400">Scroll ↓</span>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto no-scrollbar space-y-4 pr-2 max-h-[75vh]">
+                    <div
+                        ref={newsScrollRef}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                        className="flex-1 overflow-y-auto no-scrollbar space-y-4 pr-2 max-h-[75vh] cursor-grab active:cursor-grabbing select-none"
+                    >
                         {NEWS_ITEMS.map((news: NewsItem, i: number) => (
                             <motion.div
                                 key={news.id}
