@@ -70,7 +70,7 @@ export const CustomCursor: React.FC = () => {
                     x: cursorX,
                     y: cursorY,
                     scale: scale,
-                    mixBlendMode: 'difference'
+                    mixBlendMode: (cursorType === 'drag' || cursorType === 'view' || cursorType === 'play') ? 'normal' : 'difference'
                 }}
             >
                 {/* Text for specific cursor types */}

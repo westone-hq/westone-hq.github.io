@@ -95,22 +95,10 @@ export interface ProjectDetailContent {
   id: string;
   media: {
     hero: string | string[];
-    visionMain: string;
     visionGrid1: string;
     visionGrid2: string;
     auraBento: string;
-    auraCard: string;
-    auraCard2?: string;
-    featureInit: string;
-    featureResult: string;
-    visionToggle1?: string;
-    visionToggle2?: string;
-    widgetImages?: string[];
   };
-  /** 히어로 이미지 배열일 때 object-contain 스타일 적용 및 패딩 추가 여부 */
-  heroContainImages?: boolean;
-  /** Vision 토글 이미지를 object-contain + object-left로 렌더링 (패딩 없음) */
-  visionImageContain?: boolean;
   hero: {
     title: string;
     type: string;
@@ -123,17 +111,12 @@ export interface ProjectDetailContent {
   vision: {
     heading: string;
     text: string;
-    image1Title: string;
-    image1Subtitle: string;
-    image3HoverText: string;
   };
   marquee: string;
   aura: {
     subheading: string;
     heading: string;
     text: string;
-    bigText: string;
-    card2Text: string;
   };
   feature: {
     subheading: string;
@@ -141,9 +124,9 @@ export interface ProjectDetailContent {
     text: string;
   };
   discovery: {
-    heading: string;
     items: { img: string; title: string }[];
   };
+  corePillars: { title: string; description: string; image: string; number: string }[];
   stats: {
     stat1: { value: string; label: string };
     stat2: { value: string; label: string };
