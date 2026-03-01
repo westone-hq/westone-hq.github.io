@@ -9,6 +9,7 @@ interface NavbarProps {
     onLogoClick: () => void;
 }
 
+// 상단 고정 네브바 — 스크롤 시 pill 형태로 축소, 메뉴/메일/로고 포함
 export const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, toggleMenu, isScrolled, onOpenContact, onLogoClick }) => {
     return (
         <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 md:pt-8 pointer-events-none transition-all duration-500">
@@ -21,7 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, toggleMenu, isScroll
                     }
         `}
             >
-                {/* Left: Menu Button */}
+                {/* 좌측: 메뉴 토글 버튼 */}
                 <div className="relative z-10 flex items-center">
                     <button
                         onClick={toggleMenu}
@@ -39,7 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, toggleMenu, isScroll
                     </button>
                 </div>
 
-                {/* Center: Logo */}
+                {/* 중앙: 로고 (절대 위치로 가운데 고정) */}
                 <button
                     onClick={onLogoClick}
                     className={`
@@ -55,7 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, toggleMenu, isScroll
                     Westone
                 </button>
 
-                {/* Right: Icons */}
+                {/* 우측: 메일 아이콘 + 호버 시 텍스트 슬라이드 */}
                 <div className="flex items-center space-x-4 md:space-x-6 z-10 pr-2">
                     <div className="flex items-center space-x-1">
                         <button

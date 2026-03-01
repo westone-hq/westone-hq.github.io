@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useCursor } from "@/context/cursor-context";
-import { useRef } from 'react';
+import { useUI } from "@/context/ui-context";
 
 const steps = [
     {
@@ -42,8 +42,8 @@ const steps = [
     }
 ];
 
-// Mobile Step Item with scroll-based reveal
-const MobileStepItem: React.FC<{ step: typeof steps[0]; index: number }> = ({ step }) => {
+// 모바일 스텝 아이템 — 뷰포트 50% 진입 시 설명 텍스트 펼침
+const MobileStepItem: React.FC<{ step: typeof steps[0] }> = ({ step }) => {
     const ref = useRef<HTMLDivElement>(null);
     const isInView = useInView(ref, { once: false, amount: 0.5 });
 
@@ -76,19 +76,13 @@ const MobileStepItem: React.FC<{ step: typeof steps[0]; index: number }> = ({ st
     );
 };
 
+// 프로세스 그리드 — 모바일: 스크롤 아코디언, 데스크탑: 호버 시 가로 아코디언 확장
 const ProcessGrid = () => {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const [isMobile, setIsMobile] = useState(false);
     const { setCursorType } = useCursor();
+    const { isMobile } = useUI();
 
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
-
-    // Mobile Layout
+    // 모바일 레이아웃
     if (isMobile) {
         return (
             <section className="bg-black text-white pt-8 pb-16">
@@ -99,8 +93,8 @@ const ProcessGrid = () => {
                 </div>
 
                 <div className="px-4 border-t border-gray-800">
-                    {steps.map((step, index) => (
-                        <MobileStepItem key={step.id} step={step} index={index} />
+                    {steps.map((step) => (
+                        <MobileStepItem key={step.id} step={step} />
                     ))}
                 </div>
 
@@ -111,10 +105,10 @@ const ProcessGrid = () => {
         );
     }
 
-    // Desktop Layout
+    // 데스크탑 레이아웃
     return (
         <section className="bg-black text-white pt-8 pb-32 md:pt-12 md:pb-56">
-            {/* Header Section */}
+            {/* 헤더 */}
             <div className="max-w-7xl mx-auto px-4 md:px-12 mb-32 md:mb-40 flex flex-col md:flex-row md:items-end justify-between gap-8">
                 <h2 className="text-5xl md:text-7xl font-serif leading-tight max-w-5xl">
                     After shipping hundreds of products, there are a few key things we've learned are needed to do the best work
@@ -128,12 +122,11 @@ const ProcessGrid = () => {
                 </a>
             </div>
 
-            {/* Horizontal Accordion */}
+            {/* 가로 아코디언 — 호버 시 flex-grow 3으로 확장, 나머지 0.3으로 페이드 */}
             <div className="w-full border-t border-b border-gray-800 flex flex-col md:flex-row h-auto md:h-[450px]">
                 {steps.map((step, index) => (
                     <motion.div
                         key={step.id}
-                        // Use flex column layout to stack: Number (top) -> Image (middle/fill) -> Text (bottom)
                         className="group relative border-b md:border-b-0 md:border-r border-gray-800 p-8 flex flex-col h-[300px] md:h-auto overflow-hidden bg-black"
                         onMouseEnter={() => {
                             setHoveredIndex(index);
@@ -144,7 +137,7 @@ const ProcessGrid = () => {
                             setCursorType('default');
                         }}
                         data-hover="true"
-                        // Animate flex-grow to create the spread effect
+                        // flex-grow로 확장 효과
                         animate={{
                             flex: hoveredIndex === index ? 3 : 1,
                             opacity: hoveredIndex !== null && hoveredIndex !== index ? 0.3 : 1
@@ -153,43 +146,38 @@ const ProcessGrid = () => {
                             flex: {
                                 duration: 0.5,
                                 ease: "easeInOut",
-                                // Wait for content to fade out before shrinking width
+                                // 축소 시 콘텐츠 페이드아웃 후 진행
                                 delay: hoveredIndex === index ? 0 : 0.3
                             },
                             opacity: { duration: 0.3 }
                         }}
                     >
-                        {/* Decorative Line (Absolute to parent) */}
+                        {/* 우측 강조선 — 호버 시 표시 */}
                         <motion.div
                             className="w-[1px] h-full absolute right-0 top-0 bg-blue-600 hidden md:block z-30"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: hoveredIndex === index ? 1 : 0 }}
                         />
 
-                        {/* 1. Header (Number) - Fixed at top */}
+                        {/* 번호 — 상단 고정 */}
                         <div className="flex justify-between items-start z-20 relative shrink-0">
                             <span className="text-xl font-serif">{step.id}</span>
                         </div>
 
-                        {/* 2. Middle (Image) - Fills remaining space */}
+                        {/* 이미지 — 중간 영역 채움, 호버 시 표시 */}
                         <div className="flex-grow relative w-full my-6 overflow-hidden rounded-sm">
                             <AnimatePresence>
                                 {hoveredIndex === index && (
                                     <motion.div
                                         className="absolute inset-0 w-full h-full"
                                         initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{
-                                            // Enter: Wait for width expansion (delay 0.3)
-                                            // Exit: Immediate fade out (duration 0.2)
-                                            duration: hoveredIndex === index ? 0.4 : 0.2,
-                                            delay: hoveredIndex === index ? 0.3 : 0
-                                        }}
+                                        animate={{ opacity: 1, transition: { duration: 0.4, delay: 0.3 } }}
+                                        exit={{ opacity: 0, transition: { duration: 0.2, delay: 0 } }}
                                     >
                                         <img
                                             src={step.image}
                                             alt={step.title}
+                                            loading="lazy"
                                             className="w-full h-full object-cover grayscale opacity-50"
                                         />
                                     </motion.div>
@@ -197,18 +185,14 @@ const ProcessGrid = () => {
                             </AnimatePresence>
                         </div>
 
-                        {/* 3. Footer (Description + Title) - Fixed at bottom */}
+                        {/* 설명 + 타이틀 — 하단 고정 */}
                         <div className="flex flex-col justify-end shrink-0 z-20 relative">
                             <AnimatePresence>
                                 {(hoveredIndex === index) && (
                                     <motion.div
                                         initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{
-                                            duration: hoveredIndex === index ? 0.4 : 0.2,
-                                            delay: hoveredIndex === index ? 0.3 : 0
-                                        }}
+                                        animate={{ opacity: 1, transition: { duration: 0.4, delay: 0.3 } }}
+                                        exit={{ opacity: 0, transition: { duration: 0.2, delay: 0 } }}
                                         className="mb-4"
                                     >
                                         <p className="text-gray-300 text-lg md:text-xl leading-relaxed max-w-md whitespace-pre-line">

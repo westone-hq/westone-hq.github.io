@@ -2,18 +2,20 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
+// 전역 UI 상태 — 스크롤, 반응형, 호버, 라우트 파생 플래그를 하나의 컨텍스트로 관리
 interface UIContextType {
-  // UI State
+  // UI 상태
   isScrolled: boolean;
   setIsScrolled: (scrolled: boolean) => void;
   isDesktop: boolean;
+  isMobile: boolean;
   isTouchDevice: boolean;
 
-  // Hover State
+  // 호버 상태
   hoveredProjectId: string | null;
   setHoveredProjectId: (id: string | null) => void;
 
-  // Route-based computed values
+  // 라우트 기반 파생값
   isHomePage: boolean;
   isMenuPage: boolean;
   isProjectDetailPage: boolean;
@@ -25,13 +27,15 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const location = useLocation();
 
-  // UI State
+  // UI 상태
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isTouchDevice, setIsTouchDevice] = useState(() =>
     window.matchMedia('(pointer: coarse)').matches
   );
 
+  // 포인터 타입 변경 감지 (마우스 ↔ 터치 전환)
   useEffect(() => {
     const mq = window.matchMedia('(pointer: coarse)');
     const handler = (e: MediaQueryListEvent) => setIsTouchDevice(e.matches);
@@ -39,10 +43,10 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Hover State
+  // 호버 상태
   const [hoveredProjectId, setHoveredProjectId] = useState<string | null>(null);
 
-  // Route-based computed values
+  // 라우트 기반 파생값
   const isHomePage = location.pathname === '/';
   const isMenuPage = location.pathname === '/menu';
   const isProjectDetailPage = location.pathname.startsWith('/work/');
@@ -51,7 +55,7 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     location.pathname === '/news' ||
     location.pathname === '/what-we-do';
 
-  // Reset scroll state when navigating to full-screen pages
+  // 풀스크린 페이지 진입 시 스크롤 위치 초기화
   useEffect(() => {
     if (isHomePage || isMenuPage) {
       setIsScrolled(false);
@@ -59,10 +63,11 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [isHomePage, isMenuPage]);
 
-  // Handle window resize
+  // 창 크기 변경 시 반응형 플래그 갱신
   useEffect(() => {
     const handleResize = () => {
       setIsDesktop(window.innerWidth >= 1024);
+      setIsMobile(window.innerWidth < 768);
     };
 
     window.addEventListener('resize', handleResize);
@@ -73,6 +78,7 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     isScrolled,
     setIsScrolled,
     isDesktop,
+    isMobile,
     isTouchDevice,
     hoveredProjectId,
     setHoveredProjectId,

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { motion, useMotionValue, useTransform, MotionValue, animate } from 'framer-motion';
+import { motion, useMotionValue, useTransform, MotionValue, animate, type AnimationPlaybackControls } from 'framer-motion';
 
 const baseItems = [
     { id: 1, img: "https://picsum.photos/600/800?random=1", title: "Dashboards" },
@@ -11,8 +11,13 @@ const baseItems = [
     { id: 7, img: "https://picsum.photos/600/800?random=7", title: "Design Systems" },
 ];
 
+interface ScrollItemData {
+    img: string;
+    title: string;
+}
+
 interface ScrollItemProps {
-    item: any;
+    item: ScrollItemData;
     index: number;
     x: MotionValue<number>;
     itemWidth: number;
@@ -20,15 +25,15 @@ interface ScrollItemProps {
     totalCount: number;
 }
 
+// 개별 스크롤 아이템 — 모듈로 연산으로 무한 순환 위치 계산
 const ScrollItem: React.FC<ScrollItemProps> = ({ item, index, x, itemWidth, gap, totalCount }) => {
     const totalItemWidth = itemWidth + gap;
     const trackWidth = totalCount * totalItemWidth;
 
     const xPos = useTransform(x, (latestX) => {
-        // Position: index 0 starts at center (0), others spread out from there
         let pos = index * totalItemWidth + latestX;
 
-        // Infinite wrap around
+        // 트랙 절반 기준으로 wrap-around
         const halfTrack = trackWidth / 2;
         pos = ((pos % trackWidth) + trackWidth) % trackWidth;
         if (pos > halfTrack) pos -= trackWidth;
@@ -48,6 +53,7 @@ const ScrollItem: React.FC<ScrollItemProps> = ({ item, index, x, itemWidth, gap,
             <img
                 src={item.img}
                 alt={item.title}
+                loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 pointer-events-none"
             />
             <div className="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/80 to-transparent w-full">
@@ -118,6 +124,7 @@ const MobileCarousel: React.FC = () => {
                     <img
                         src={item.img}
                         alt={item.title}
+                        loading="lazy"
                         className="w-full h-full object-cover pointer-events-none"
                     />
                     <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 to-transparent">
@@ -129,15 +136,15 @@ const MobileCarousel: React.FC = () => {
     );
 };
 
+// 가로 자동 슬라이드 섹션 — 모바일: 스냅 캐러셀, 데스크탑: 1초 정지 후 단계 이동
 const HorizontalScroll = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = useState({ width: 0, gap: 32 });
     const x = useMotionValue(0);
 
-    // Responsive width calculation
+    // 반응형 아이템 너비 계산 (모바일 75vw, 데스크탑 25vw)
     useEffect(() => {
         const updateDimensions = () => {
-            // Mobile: 75vw for centered card with peek on sides, Desktop: 25vw
             const isMobile = window.innerWidth < 768;
             const itemWidth = isMobile ? window.innerWidth * 0.75 : window.innerWidth * 0.25;
             const gap = isMobile ? 12 : 32;
@@ -149,38 +156,34 @@ const HorizontalScroll = () => {
         return () => window.removeEventListener('resize', updateDimensions);
     }, []);
 
-    // Slide Logic: Step-by-step movement
+    // 1초 정지 → 0.8초 이동 반복 루프
     useEffect(() => {
         if (dimensions.width === 0) return;
 
-        let controls: any;
-        let timeoutId: any;
+        let controls: AnimationPlaybackControls | null = null;
+        let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-        // The distance to move for one item
         const stride = dimensions.width + dimensions.gap;
 
         const runLoop = async () => {
-            // 1. Wait for 1 second (Stop phase)
+            // 1초 대기 (정지 구간)
             await new Promise(resolve => {
                 timeoutId = setTimeout(resolve, 1000);
             });
 
-            // 2. Animate to the next position (Move phase)
-            // We calculate the *next* target based on current value minus one stride
+            // 한 아이템 너비만큼 이동
             const currentX = x.get();
             const targetX = currentX - stride;
 
             controls = animate(x, targetX, {
                 duration: 0.8,
-                ease: [0.32, 0.72, 0, 1], // Custom bezier for a smooth "snap" feel
+                ease: [0.32, 0.72, 0, 1],
                 onComplete: () => {
-                    // 3. Loop: triggers the function again
                     runLoop();
                 }
             });
         };
 
-        // Start the loop
         runLoop();
 
         return () => {
@@ -189,7 +192,7 @@ const HorizontalScroll = () => {
         };
     }, [dimensions, x]);
 
-    // Duplicate items enough times to ensure smooth infinite scrolling
+    // 3세트 복제 — 대형 화면에서도 끊김 없이 순환
     const RENDER_SETS = 3;
     const DISPLAY_ITEMS = Array(RENDER_SETS).fill(baseItems).flat().map((item, idx) => ({ ...item, uniqueId: idx }));
 

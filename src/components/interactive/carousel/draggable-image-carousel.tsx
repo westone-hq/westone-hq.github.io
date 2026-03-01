@@ -12,7 +12,7 @@ interface DraggableImageCarouselProps {
     containImages?: boolean;
 }
 
-// Configuration
+// 이미지 드래그 캐러셀 — 모바일: 수직 스택, 데스크탑: 드래그 무한 순환
 const CARD_WIDTH = 380;
 const GAP = 32;
 const TOTAL_ITEM_WIDTH = CARD_WIDTH + GAP;
@@ -26,6 +26,7 @@ const DraggableImageCarousel: React.FC<DraggableImageCarouselProps> = ({ items, 
     const x = useMotionValue(0);
     const DISPLAY_ITEMS: CarouselItem[] = Array(RENDER_SETS).fill(items).flat();
 
+    // 창 크기 변경 시 모바일 여부 재계산
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
         checkMobile();
@@ -33,7 +34,7 @@ const DraggableImageCarousel: React.FC<DraggableImageCarouselProps> = ({ items, 
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    const onPan = (_e: any, info: PanInfo) => {
+    const onPan = (_e: PointerEvent, info: PanInfo) => {
         x.set(x.get() + info.delta.x);
     };
 
@@ -41,7 +42,7 @@ const DraggableImageCarousel: React.FC<DraggableImageCarouselProps> = ({ items, 
         x.stop();
     };
 
-    const onPanEnd = (_e: any, info: PanInfo) => {
+    const onPanEnd = (_e: PointerEvent, info: PanInfo) => {
         const moveDistance = info.velocity.x * 0.12;
         const targetX = x.get() + moveDistance;
         animate(x, targetX, {
@@ -52,7 +53,7 @@ const DraggableImageCarousel: React.FC<DraggableImageCarouselProps> = ({ items, 
         });
     };
 
-    // Mobile: vertical stack layout
+    // 모바일: 수직 스택 레이아웃
     if (isMobile) {
         return (
             <div className="px-4 space-y-4 pb-8">
@@ -68,6 +69,7 @@ const DraggableImageCarousel: React.FC<DraggableImageCarouselProps> = ({ items, 
                         <img
                             src={item.img}
                             alt={item.title}
+                            loading="lazy"
                             className={`w-full h-full transition-all duration-700 ${
                                 containImages
                                     ? 'object-contain p-4 opacity-100'
@@ -85,7 +87,7 @@ const DraggableImageCarousel: React.FC<DraggableImageCarouselProps> = ({ items, 
         );
     }
 
-    // Desktop: draggable carousel (no zigzag — all cards at the same vertical level)
+    // 데스크탑: 드래그 캐러셀 (지그재그 없음, 동일 높이)
     return (
         <div
             ref={containerRef}
@@ -94,7 +96,7 @@ const DraggableImageCarousel: React.FC<DraggableImageCarouselProps> = ({ items, 
             onMouseEnter={() => setCursorType('drag')}
             onMouseLeave={() => setCursorType('default')}
         >
-            {/* Invisible gesture handler layer */}
+            {/* 제스처 레이어 — 투명, pan 이벤트 수신 */}
             <motion.div
                 className="absolute inset-0 z-30"
                 onPan={onPan}
@@ -102,7 +104,7 @@ const DraggableImageCarousel: React.FC<DraggableImageCarouselProps> = ({ items, 
                 onPanEnd={onPanEnd}
             />
 
-            {/* Visual items layer */}
+            {/* 시각 아이템 레이어 */}
             <div className="absolute top-0 left-1/2 w-full h-full pointer-events-none z-20 -translate-x-1/2">
                 {DISPLAY_ITEMS.map((item, index) => (
                     <ImageCarouselItem
@@ -127,6 +129,7 @@ interface ImageCarouselItemProps {
     containImages: boolean;
 }
 
+// 이미지 캐러셀 개별 아이템 — 드래그 x 값을 wrap-around 위치로 변환
 const ImageCarouselItem: React.FC<ImageCarouselItemProps> = ({ item, index, x, totalCount, containImages }) => {
     const baseOffset = index * TOTAL_ITEM_WIDTH;
     const trackWidth = totalCount * TOTAL_ITEM_WIDTH;
@@ -158,6 +161,7 @@ const ImageCarouselItem: React.FC<ImageCarouselItemProps> = ({ item, index, x, t
                 <img
                     src={item.img}
                     alt={item.title}
+                    loading="lazy"
                     className={`w-full h-full transition-all duration-700 ${
                         containImages
                             ? 'object-contain p-4 opacity-100 group-hover:scale-105'

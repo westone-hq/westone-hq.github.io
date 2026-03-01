@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import type { ContactFormData } from '../../../types';
 import { TextInput, TextAreaInput, SelectInput } from "@/components/common/forms";
 
+// 문의 섹션 — 폼 유효성 검사 후 mailto 링크로 메일 앱 오픈
 const ContactSection: React.FC = () => {
+    // 상태
     const [formData, setFormData] = useState<ContactFormData>({
         name: '',
         email: '',
@@ -17,6 +19,7 @@ const ContactSection: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
+    // 필수 필드 유효성 검사
     const validate = () => {
         const newErrors: Partial<Record<keyof ContactFormData, string>> = {};
         if (!formData.name.trim()) newErrors.name = "Name is required";
@@ -32,6 +35,7 @@ const ContactSection: React.FC = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+    // 입력 변경 시 formData 업데이트 + 해당 필드 에러 초기화
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
 
@@ -40,7 +44,6 @@ const ContactSection: React.FC = () => {
             [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
         }));
 
-        // Clear error when user types
         if (errors[name as keyof ContactFormData]) {
             setErrors(prev => ({ ...prev, [name]: undefined }));
         }
@@ -51,13 +54,13 @@ const ContactSection: React.FC = () => {
         return stage ? stage.label : value;
     };
 
+    // 제출 — 유효성 통과 시 mailto 링크 생성 후 메일 앱 오픈, 5초 후 성공 메시지 초기화
     const handleSubmit = useCallback((e: React.FormEvent) => {
         e.preventDefault();
         if (!validate()) return;
 
         setIsSubmitting(true);
 
-        // Build email content
         const subject = encodeURIComponent(`[문의] ${formData.name}님의 프로젝트 문의`);
         const body = encodeURIComponent(
 `이름: ${formData.name}
@@ -70,7 +73,6 @@ const ContactSection: React.FC = () => {
 ${formData.message}`
         );
 
-        // Open mailto link
         window.location.href = `mailto:westone251113@gmail.com?subject=${subject}&body=${body}`;
 
         setIsSubmitting(false);
@@ -84,7 +86,6 @@ ${formData.message}`
             newsletter: false,
         });
 
-        // Reset success message after a few seconds
         setTimeout(() => setIsSuccess(false), 5000);
     }, [formData]);
 
@@ -103,13 +104,12 @@ ${formData.message}`
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
         >
-
-            {/* Background Decorative Elements */}
+            {/* 상단 장식 라인 */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-20"></div>
 
             <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative z-10 pt-24 lg:pt-0">
 
-                {/* Left Column: Text Content */}
+                {/* 좌: 브랜드 카피 + 직접 연락처 */}
                 <div className="lg:col-span-5 flex flex-col justify-start pt-8">
                     <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl text-white mb-8 tracking-tight leading-[0.9]">
                         Let's <br />
@@ -136,7 +136,7 @@ ${formData.message}`
                     </div>
                 </div>
 
-                {/* Right Column: Interactive Form */}
+                {/* 우: 문의 폼 */}
                 <div className="lg:col-span-7 pb-12 lg:pb-0">
                     <div className="bg-transparent p-0 md:p-4">
                         <form onSubmit={handleSubmit} className="space-y-4">
@@ -203,6 +203,7 @@ ${formData.message}`
 
                             <div className="pt-8 border-t border-neutral-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
 
+                                {/* 뉴스레터 체크박스 */}
                                 <label className="flex items-center gap-3 cursor-pointer group">
                                     <div className="relative">
                                         <input
@@ -250,6 +251,7 @@ ${formData.message}`
 
                             </div>
 
+                            {/* 제출 성공 메시지 */}
                             {isSuccess && (
                                 <div className="mt-4 text-green-500 text-sm animate-pulse">
                                     메일 앱에서 전송 버튼을 눌러주세요. 24시간 내에 답변 드리겠습니다.

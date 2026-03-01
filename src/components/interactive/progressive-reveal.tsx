@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
+// 스크롤 진행도에 따라 clipPath로 이미지 2를 위에서 아래로 점진적으로 공개
 export const ScrollProgressiveReveal: React.FC<{
     image1: string;
     image2: string;
@@ -20,12 +21,12 @@ export const ScrollProgressiveReveal: React.FC<{
     return (
         <div ref={containerRef} className="relative w-full h-[150vh] bg-black">
             <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
-                {/* Base Image */}
+                {/* 기본 이미지 (어둡게 깔림) */}
                 <div className="absolute inset-0">
                     <img src={image1} className="w-full h-full object-cover opacity-40" alt="Base" />
                 </div>
 
-                {/* Revealed Image */}
+                {/* 공개 이미지 — clipPath로 스크롤 진행에 따라 표시 */}
                 <motion.div
                     style={{ clipPath, scale }}
                     className="absolute inset-0 z-10"
@@ -33,7 +34,7 @@ export const ScrollProgressiveReveal: React.FC<{
                     <img src={image2} className="w-full h-full object-cover" alt="Reveal" />
                 </motion.div>
 
-                {/* Content Overlay */}
+                {/* 텍스트 오버레이 */}
                 <motion.div
                     style={{ opacity }}
                     className="relative z-20 text-center px-6"

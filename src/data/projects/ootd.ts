@@ -1,5 +1,4 @@
-import type { Project } from '../../types';
-import type { ProjectDetailContent } from '../../types';
+import type { Project, ProjectDetailContent } from '../../types';
 
 import heroImg from '../../assets/ootd/hero.png';
 import mainHome from '../../assets/ootd/main_home.png';

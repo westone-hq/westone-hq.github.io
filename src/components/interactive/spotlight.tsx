@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
 
+// 스포트라이트 효과 — 마우스 위치에 원형 마스크를 적용해 콘텐츠를 선택적으로 밝힘 (데스크탑 전용)
 export const SpotlightReveal: React.FC<{
     children: React.ReactNode;
     className?: string;

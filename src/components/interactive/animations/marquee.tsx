@@ -10,6 +10,7 @@ interface MarqueeProps {
     text?: string;
 }
 
+// 무한 가로 마퀴 — items/text/기본 브랜드 목록을 120초 주기로 스크롤
 const Marquee: React.FC<MarqueeProps> = ({ items, text }) => {
     let displayItems: string[] = defaultBrands;
 
@@ -19,8 +20,7 @@ const Marquee: React.FC<MarqueeProps> = ({ items, text }) => {
         displayItems = [text];
     }
 
-    // Determine how many times to repeat to ensure it fills screen
-    // Simple heuristic: if fewer items, repeat more.
+    // 아이템 수가 적을수록 더 많이 반복해 화면을 채움
     let repeatCount = 4;
     if (displayItems.length < 5) repeatCount = 12;
 
@@ -38,7 +38,7 @@ const Marquee: React.FC<MarqueeProps> = ({ items, text }) => {
                         duration: 120,
                     }}
                 >
-                    {/* Repeat list multiple times to ensure seamless loop on large screens */}
+                    {/* 복제 목록 — x: -50% 이동으로 끊김 없이 루프 */}
                     {repeatedItems.map((item, index) => (
                         <span key={index} className="text-6xl md:text-9xl font-bold text-white serif opacity-90 cursor-default" data-hover="true">
                             {item}

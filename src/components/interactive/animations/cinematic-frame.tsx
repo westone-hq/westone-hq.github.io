@@ -1,16 +1,11 @@
 import { motion } from 'framer-motion';
 
+// 시네마틱 프레임 — 뷰포트 진입 시 scale 1.3→1, border 100px→20px 수축 애니메이션
 const CinematicFrame = () => {
     return (
         <section className="bg-gray-100 py-32 md:py-56 px-4 md:px-12">
             <div className="max-w-7xl mx-auto flex flex-col items-center">
 
-                {/*
-            Frame Interaction Container
-            - Effect: "Cinematic Focus"
-            - Scale: 1.3 -> 1.0
-            - Border: 100px -> 20px
-        */}
                 <motion.div
                     className="relative w-full max-w-4xl bg-black shadow-2xl"
                     style={{ borderStyle: 'solid', borderColor: 'black' }}
@@ -19,7 +14,7 @@ const CinematicFrame = () => {
                     viewport={{ once: true, margin: "-10%" }}
                     transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 >
-                    {/* Inner White Matting & Content Area */}
+                    {/* 내부 콘텐츠 영역 */}
                     <div className="bg-white w-full h-[600px] md:h-[800px] relative overflow-hidden p-4 md:p-8">
                         <motion.div
                             initial={{ scale: 1.2 }}

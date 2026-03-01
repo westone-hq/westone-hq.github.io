@@ -53,10 +53,12 @@ const MobileListItem: React.FC<{
     );
 };
 
+// 타이포그래피 목록 — 모바일: 스크롤 자동 아코디언, 데스크탑: 호버 시 마우스 위치에 플로팅 이미지
 export const InteractiveTypographicList: React.FC<{
     items: { img: string; title: string }[];
 }> = ({ items }) => {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    // 호버 해제 시에도 마지막 이미지 유지 (깜빡임 방지)
     const lastIndexRef = useRef<number>(0);
     const mouseX = useMotionValue(-500);
     const mouseY = useMotionValue(-500);
@@ -67,7 +69,7 @@ export const InteractiveTypographicList: React.FC<{
 
     if (hoveredIndex !== null) lastIndexRef.current = hoveredIndex;
 
-    // 전역 mousemove로 항상 위치 추적 (hover 전부터)
+    // 호버 전부터 마우스 위치 추적
     useEffect(() => {
         const track = (e: MouseEvent) => {
             mouseX.set(e.clientX);
@@ -76,11 +78,6 @@ export const InteractiveTypographicList: React.FC<{
         window.addEventListener('mousemove', track);
         return () => window.removeEventListener('mousemove', track);
     }, [mouseX, mouseY]);
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        mouseX.set(e.clientX);
-        mouseY.set(e.clientY);
-    };
 
     return (
         <div className="relative">
@@ -93,7 +90,7 @@ export const InteractiveTypographicList: React.FC<{
             </div>
 
             {/* 데스크탑: 마우스 호버 + 플로팅 이미지 */}
-            <div onMouseMove={handleMouseMove} className="hidden md:block relative">
+            <div className="hidden md:block relative">
                 <div className="flex flex-col border-t border-white/10">
                     {items.map((item, i) => (
                         <div
@@ -130,8 +127,9 @@ export const InteractiveTypographicList: React.FC<{
                 >
                     <img
                         src={items[lastIndexRef.current].img}
-                        className="w-full h-auto block"
                         alt="Preview"
+                        loading="lazy"
+                        className="w-full h-auto block"
                     />
                 </motion.div>
             </div>

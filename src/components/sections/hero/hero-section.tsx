@@ -7,6 +7,7 @@ interface HeroSectionProps {
     onOpenProject: (id: string) => void;
 }
 
+// 히어로 섹션 — 프로젝트 호버 시 프리뷰 이미지, 기본은 브랜드 헤드라인 표시
 export const HeroSection: React.FC<HeroSectionProps> = ({ activeProject, onOpenProject }) => {
     return (
         <motion.main
@@ -31,6 +32,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ activeProject, onOpenP
                             <img
                                 src={activeProject.image}
                                 alt={activeProject.name}
+                                loading="lazy"
                                 className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black/20" />

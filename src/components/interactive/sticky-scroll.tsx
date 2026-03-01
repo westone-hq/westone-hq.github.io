@@ -1,10 +1,11 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
-// 모바일 전용 - 3D 회전 없이 부드러운 슬라이드 애니메이션
+// 모바일 이미지 아이템 — 3D 없이 y/scale/opacity 스크롤 연동
 const StickyImageItemMobile: React.FC<{ img: string; index: number }> = ({ img, index }) => {
     const ref = useRef(null);
+    const shouldReduceMotion = useReducedMotion();
     const { scrollYProgress } = useScroll({
         target: ref,
         offset: ["start end", "end start"]
@@ -17,7 +18,7 @@ const StickyImageItemMobile: React.FC<{ img: string; index: number }> = ({ img, 
     return (
         <motion.div
             ref={ref}
-            style={{ y, scale, opacity }}
+            style={shouldReduceMotion ? { opacity } : { y, scale, opacity }}
             className="relative w-full rounded-xl overflow-hidden shadow-[0_20px_50px_-8px_rgba(0,0,0,0.8)] bg-neutral-900 border border-white/10"
         >
             <img
@@ -29,9 +30,10 @@ const StickyImageItemMobile: React.FC<{ img: string; index: number }> = ({ img, 
     );
 };
 
-// 데스크탑 - 기존 3D 효과
+// 데스크탑 이미지 아이템 — 3D rotateX/rotateY + y 스크롤 연동, prefers-reduced-motion 지원
 const StickyImageItem: React.FC<{ img: string; index: number }> = ({ img, index }) => {
     const ref = useRef(null);
+    const shouldReduceMotion = useReducedMotion();
     const { scrollYProgress } = useScroll({
         target: ref,
         offset: ["start end", "end start"]
@@ -46,15 +48,10 @@ const StickyImageItem: React.FC<{ img: string; index: number }> = ({ img, index 
     return (
         <motion.div
             ref={ref}
-            style={{
-                y,
-                rotateX,
-                rotateY,
-                scale,
-                opacity,
-                perspective: 800,
-                transformStyle: "preserve-3d"
-            }}
+            style={shouldReduceMotion
+                ? { opacity }
+                : { y, rotateX, rotateY, scale, opacity, perspective: 800, transformStyle: "preserve-3d" }
+            }
             className="relative h-[500px] w-fit rounded-xl overflow-hidden group shadow-[0_45px_100px_-15px_rgba(0,0,0,0.6)] bg-neutral-900 border border-white/10"
         >
             <img
@@ -67,6 +64,7 @@ const StickyImageItem: React.FC<{ img: string; index: number }> = ({ img, index 
     );
 };
 
+// 스티키 스크롤 섹션 — 좌측 텍스트 고정, 우측 이미지 스크롤 연동
 export const StickyScrollSection: React.FC<{
     heading: string;
     text: string;
@@ -94,7 +92,7 @@ export const StickyScrollSection: React.FC<{
             <div className="px-6 md:px-12 max-w-[1400px] mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-0 md:gap-24 items-start">
 
-                    {/* Sticky Text Column */}
+                    {/* 스티키 텍스트 컬럼 */}
                     <div className="md:col-span-5 sticky top-24 md:top-32 z-20 pb-6 md:pb-0">
                         <div className="space-y-4 md:space-y-6">
                             {subheading && (
@@ -124,7 +122,7 @@ export const StickyScrollSection: React.FC<{
                         </div>
                     </div>
 
-                    {/* Scrolling Images Column */}
+                    {/* 스크롤 이미지 컬럼 */}
                     <div className="md:col-span-7 mt-12 md:mt-0 flex flex-col gap-5 md:gap-12 items-stretch md:items-end">
                         {images.map((img, i) => (
                             <div key={i}>

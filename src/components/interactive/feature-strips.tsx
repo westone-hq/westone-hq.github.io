@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, Plus } from 'lucide-react';
 
+// 인터랙티브 피처 스트립 — 모바일: 아코디언 토글, 데스크탑: 호버 시 스트립 확장
 export const InteractiveFeatureStrips: React.FC<{
     items: { title: string; description: string; image: string; number: string }[];
 }> = ({ items }) => {
@@ -70,7 +71,7 @@ export const InteractiveFeatureStrips: React.FC<{
                         transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                         className="relative h-full overflow-hidden cursor-pointer group"
                     >
-                        {/* Background Image */}
+                        {/* 배경 이미지 — 호버 시 grayscale 해제 + 스케일 업 */}
                         <motion.div
                             animate={{ scale: hoveredIndex === index ? 1.1 : 1 }}
                             transition={{ duration: 0.8 }}
@@ -84,7 +85,7 @@ export const InteractiveFeatureStrips: React.FC<{
                             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
                         </motion.div>
 
-                        {/* Content Overlay */}
+                        {/* 콘텐츠 오버레이 */}
                         <div className="absolute inset-0 p-8 flex flex-col justify-between z-10">
                             <div className="flex justify-between items-start">
                                 <span className="text-xs font-mono text-white/50 group-hover:text-white transition-colors">{item.number}</span>
@@ -113,7 +114,7 @@ export const InteractiveFeatureStrips: React.FC<{
                             </div>
                         </div>
 
-                        {/* Decorative Border */}
+                        {/* 구분선 — 호버 시 사라짐 */}
                         <div className="absolute right-0 top-1/4 bottom-1/4 w-px bg-white/10 group-hover:opacity-0 transition-opacity" />
                     </motion.div>
                 ))}

@@ -58,8 +58,9 @@ const MobileServiceItem: React.FC<{ service: typeof services[0] }> = ({ service 
                             <div className="rounded-xl overflow-hidden aspect-video">
                                 <img
                                     src={service.image}
-                                    className="w-full h-full object-cover"
                                     alt={service.title}
+                                    loading="lazy"
+                                    className="w-full h-full object-cover"
                                 />
                             </div>
                         </div>
@@ -70,6 +71,7 @@ const MobileServiceItem: React.FC<{ service: typeof services[0] }> = ({ service 
     );
 };
 
+// 서비스 카드 — 모바일: 스크롤 아코디언, 데스크탑: 호버 시 이미지 표시 + 패딩 확장
 const ServiceCards = () => {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const { setCursorType } = useCursor();
@@ -111,20 +113,16 @@ const ServiceCards = () => {
                                 animate={{ backgroundColor: isHovered ? "rgba(20,20,20,0.4)" : "transparent" }}
                                 transition={{ duration: 0.4, ease: "easeInOut" }}
                             >
-                                {/* 
-                                Padding Animation Logic: 
-                                py-10 (default) -> py-24 (hover) 
-                                Keeps the spacious, breathing effect.
-                            */}
+                                {/* 호버 시 패딩 py-10→py-24로 확장 */}
                                 <div className={`w-full transition-all duration-500 ease-out ${isHovered ? 'py-24' : 'py-10'}`}>
                                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
 
-                                        {/* Left: Title (Span 4 to balance with wider image) */}
+                                        {/* 좌: 타이틀 */}
                                         <div className="md:col-span-4 flex items-center gap-6">
                                             <h3 className={`serif text-3xl md:text-5xl leading-tight transition-colors duration-300 ${isHovered ? 'text-white' : 'text-gray-200'}`}>
                                                 {service.title}
                                             </h3>
-                                            {/* White Dot Indicator */}
+                                            {/* 호버 시 흰 점 인디케이터 */}
                                             <motion.div
                                                 initial={{ scale: 0, opacity: 0 }}
                                                 animate={{ scale: isHovered ? 1 : 0, opacity: isHovered ? 1 : 0 }}
@@ -132,7 +130,7 @@ const ServiceCards = () => {
                                             />
                                         </div>
 
-                                        {/* Center: Image (Span 4 to accommodate landscape width) - Visible only on hover */}
+                                        {/* 중앙: 이미지 — 호버 시만 표시 */}
                                         <div className="hidden md:flex md:col-span-4 justify-center items-center h-full min-h-[1px]">
                                             <AnimatePresence>
                                                 {isHovered && (
@@ -153,7 +151,7 @@ const ServiceCards = () => {
                                             </AnimatePresence>
                                         </div>
 
-                                        {/* Right: Description (Span 4) */}
+                                        {/* 우: 설명 */}
                                         <div className="md:col-span-4 pl-0 md:pl-8">
                                             <p className={`text-base md:text-xl leading-relaxed transition-colors duration-300 whitespace-pre-wrap ${isHovered ? 'text-gray-300' : 'text-gray-500'}`}>
                                                 {service.description}
