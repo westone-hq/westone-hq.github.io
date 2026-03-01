@@ -1,6 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { motion, useMotionValue, useTransform, MotionValue, animate, type PanInfo } from 'framer-motion';
+import React, { useRef, useEffect } from 'react';
+import { motion, useMotionValue, useTransform, MotionValue, animate, type PanInfo, type AnimationPlaybackControls } from 'framer-motion';
 import { useCursor } from '../../../context/cursor-context';
+import { useUI } from '../../../context/ui-context';
 
 import portraitYjt from '../../../assets/what-we-do/portrait-yjt.jpg';
 import portraitPgj from '../../../assets/what-we-do/portrait-pgj.jpg';
@@ -46,58 +47,57 @@ const testimonials: Testimonial[] = [
     }
 ];
 
-// Configuration
+// 카드 크기/간격 설정
 const CARD_WIDTH = 320;
 const GAP = 100;
 const TOTAL_ITEM_WIDTH = CARD_WIDTH + GAP;
 const ITEMS = testimonials;
-// We render 4 sets to ensure the screen is filled on large monitors
+// 대형 모니터 채우기 위해 4세트 복제
 const RENDER_SETS = 4;
 const DISPLAY_ITEMS: Testimonial[] = Array(RENDER_SETS).fill(ITEMS).flat();
 
+// 드래그 캐러셀 — 팀 멤버 카드, 모바일: 지그재그 수직 레이아웃, 데스크탑: 드래그 무한 순환
 const DraggableCarousel = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const { setCursorType } = useCursor();
-    const [isMobile, setIsMobile] = useState(false);
+    const { isMobile } = useUI();
 
-    // Use a motion value to track the drag position globally
+    // 드래그 위치 추적 MotionValue
     const x = useMotionValue(0);
+    const animationRef = useRef<AnimationPlaybackControls | null>(null);
 
+    // 언마운트 시 진행 중인 애니메이션 정리
     useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
+        return () => {
+            animationRef.current?.stop();
+        };
     }, []);
 
-    // Handle Pan Gesture (Drag without moving the element)
-    const onPan = (_e: any, info: PanInfo) => {
-        // Directly update x based on delta.
-        // This allows infinite movement without the element actually moving away.
+    // pan 이벤트로 x를 직접 조작 (엘리먼트는 고정, delta로 움직임)
+    const onPan = (_e: PointerEvent, info: PanInfo) => {
         x.set(x.get() + info.delta.x);
     };
 
+    // 드래그 시작 시 관성 애니메이션 중단
     const onPanStart = () => {
-        // Stop any ongoing inertia animation when user grabs again
+        animationRef.current?.stop();
         x.stop();
     };
 
-    const onPanEnd = (_e: any, info: PanInfo) => {
-        // Calculate target based on velocity ("throw")
-        // Factor 0.12 reduces the throw distance (low sensitivity)
+    // 드래그 종료 시 속도 기반 관성 스프링 애니메이션
+    const onPanEnd = (_e: PointerEvent, info: PanInfo) => {
         const moveDistance = info.velocity.x * 0.12;
         const targetX = x.get() + moveDistance;
 
-        // Animate to the calculated target
-        animate(x, targetX, {
+        animationRef.current = animate(x, targetX, {
             type: "spring",
-            mass: 0.5,      // Lighter mass stops faster
-            stiffness: 200, // Higher stiffness snaps to position
-            damping: 30,    // High damping prevents overshoot and feels "heavy"
+            mass: 0.5,
+            stiffness: 200,
+            damping: 30,
         });
     };
 
-    // Mobile: Zigzag vertical layout
+    // 모바일: 지그재그 수직 레이아웃
     if (isMobile) {
         return (
             <section className="bg-black pt-16 pb-8 overflow-hidden relative">
@@ -114,7 +114,7 @@ const DraggableCarousel = () => {
         );
     }
 
-    // Desktop: Draggable carousel
+    // 데스크탑: 드래그 캐러셀
     return (
         <section className="bg-black pt-24 pb-8 md:pt-40 md:pb-12 overflow-hidden relative select-none">
             <div className="mb-12 px-4 md:px-12 relative z-10 pointer-events-none">
@@ -134,7 +134,7 @@ const DraggableCarousel = () => {
                 onMouseEnter={() => setCursorType('drag')}
                 onMouseLeave={() => setCursorType('default')}
             >
-                {/* Invisible gesture handler layer. Added cursor-none to enforce custom cursor during drag. */}
+                {/* 제스처 레이어 — 투명, 최상위에서 pan 이벤트 수신 */}
                 <motion.div
                     className="absolute inset-0 z-30"
                     onPan={onPan}
@@ -142,7 +142,7 @@ const DraggableCarousel = () => {
                     onPanEnd={onPanEnd}
                 />
 
-                {/* The Visual Items Layer */}
+                {/* 시각 아이템 레이어 */}
                 <div className="absolute top-0 left-1/2 w-full h-full pointer-events-none z-20 -translate-x-1/2">
                     {DISPLAY_ITEMS.map((item, index) => (
                         <CarouselItem
@@ -159,7 +159,7 @@ const DraggableCarousel = () => {
     );
 };
 
-// Mobile Zigzag Card Component
+// 모바일 지그재그 카드 — 짝수/홀수 인덱스로 좌우 교차 배치
 interface MobileTeamCardProps {
     item: Testimonial;
     index: number;
@@ -181,6 +181,7 @@ const MobileTeamCard: React.FC<MobileTeamCardProps> = ({ item, index }) => {
                     <img
                         src={item.image}
                         alt={item.author}
+                        loading="lazy"
                         className="w-full h-full object-contain grayscale opacity-90"
                         draggable={false}
                     />
@@ -206,33 +207,26 @@ interface CarouselItemProps {
     totalCount: number;
 }
 
+// 개별 캐러셀 카드 — 모듈로 연산으로 무한 wrap-around 위치 계산, id 기반 지그재그
 const CarouselItem: React.FC<CarouselItemProps> = ({ item, index, x, totalCount }) => {
-    // Determine zigzag based on the *content* ID to ensure consistency
+    // 콘텐츠 ID 기준 지그재그 (복제본에서도 일관성 유지)
     const isEven = item.id % 2 === 0;
 
-    // Position each item sequentially
     const baseOffset = (index * TOTAL_ITEM_WIDTH);
-
-    // The width of the entire track rendered
     const trackWidth = totalCount * TOTAL_ITEM_WIDTH;
 
-    // Transform the x value into a wrapped position
+    // x 드래그 값을 [-trackWidth/2, trackWidth/2] 범위로 wrap
     const xPos = useTransform(x, (latestX) => {
-        // 1. Calculate raw position based on drag
         let pos = baseOffset + latestX;
 
-        // 2. Center offset logic
-        // We shift by half track width so the "center" of our calculation is 0
+        // 트랙 중심 기준으로 오프셋
         pos -= (trackWidth / 2);
 
-        // 3. Wrap logic (Standard Modulo)
-        // This ensures the item stays within the visible range [-trackWidth/2, trackWidth/2]
-        // regardless of how far x increases or decreases.
+        // 음수 포함 모듈로 연산
         const min = -trackWidth / 2;
         const max = trackWidth / 2;
         const range = max - min;
 
-        // Custom modulo for negative numbers
         const wrappedPos = ((((pos - min) % range) + range) % range) + min;
 
         return wrappedPos;
@@ -246,10 +240,7 @@ const CarouselItem: React.FC<CarouselItemProps> = ({ item, index, x, totalCount 
                 ${isEven ? 'mt-48' : 'mt-0'} 
             `}
         >
-            {/* 
-                Updated Animation: Bottom-to-top reveal using clipPath.
-                Removed 'once: true' so it re-triggers every time the item enters the viewport.
-            */}
+            {/* 뷰포트 진입 시 아래에서 위로 페이드인 */}
             <motion.div
                 className="w-full h-[420px] overflow-hidden rounded-sm bg-black shadow-2xl"
                 initial={{ opacity: 0, y: 50 }}
@@ -260,8 +251,9 @@ const CarouselItem: React.FC<CarouselItemProps> = ({ item, index, x, totalCount 
                 <img
                     src={item.image}
                     alt={item.author}
+                    loading="lazy"
                     className="w-full h-full object-contain grayscale opacity-90 transition-all duration-500 hover:grayscale-0 hover:opacity-100"
-                    draggable={false} // Prevent native image drag
+                    draggable={false}
                 />
             </motion.div>
             <div className="space-y-4 pr-4">

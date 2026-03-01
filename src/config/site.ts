@@ -1,17 +1,11 @@
-/**
- * Site Configuration
- * Central place for all site-wide constants, metadata, and configuration
- */
-
+// 사이트 전역 설정 — 브랜드/히어로/연락처/소셜/UI/반응형 상수
 export const SITE_CONFIG = {
-  // Brand Information
   brand: {
     name: 'Westone',
     tagline: 'We make interfaces',
     foundedYear: 2018,
   },
 
-  // Hero Section
   hero: {
     description: "Since 2018, we've helped the most innovative startups and reputable brands design, build, and ship products worth talking about.",
     headline: {
@@ -20,14 +14,12 @@ export const SITE_CONFIG = {
     },
   },
 
-  // Contact Information
   contact: {
     cta: 'Get In Touch',
     email: 'hello@westone.com',
     phone: '+1 (555) 123-4567',
   },
 
-  // Social Media
   social: {
     twitter: 'https://twitter.com/westone',
     linkedin: 'https://linkedin.com/company/westone',
@@ -35,7 +27,6 @@ export const SITE_CONFIG = {
     github: 'https://github.com/westone',
   },
 
-  // UI Settings
   ui: {
     navbar: {
       menuButton: {
@@ -43,10 +34,10 @@ export const SITE_CONFIG = {
         close: 'Close',
       },
     },
-    scrollThreshold: 50, // pixels before navbar transforms
+    scrollThreshold: 50, // 네브바 변형 기준 스크롤 px
   },
 
-  // Responsive Breakpoints (matching Tailwind)
+  // Tailwind 브레이크포인트와 동일
   breakpoints: {
     mobile: 640,
     tablet: 768,
@@ -55,7 +46,7 @@ export const SITE_CONFIG = {
   },
 } as const;
 
-// Animation Constants
+// 애니메이션 지속 시간 및 이징 상수
 export const ANIMATION_CONFIG = {
   durations: {
     fast: 0.3,
@@ -70,7 +61,7 @@ export const ANIMATION_CONFIG = {
   },
 } as const;
 
-// SEO & Metadata
+// SEO 메타데이터
 export const SEO_CONFIG = {
   defaultTitle: 'Westone - We make interfaces',
   titleTemplate: '%s | Westone',

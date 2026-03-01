@@ -3,14 +3,16 @@ import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { Instagram } from 'lucide-react';
 import { PROJECTS } from '@/data/projects';
 import { useProjectNavigation } from '@/hooks';
+import type { Project } from '@/types';
 
+// 프로젝트 pill — 뷰포트 45% 이내 진입 시 활성화, 클릭 시 상세 오픈
 const ProjectItem = ({
     project,
     onOpen,
     isActive,
     onActivate
 }: {
-    project: any,
+    project: Project,
     onOpen: (id: string) => void,
     isActive: boolean,
     onActivate: (id: string) => void
@@ -43,22 +45,22 @@ const ProjectItem = ({
     )
 }
 
+// 모바일 홈 — 스크롤 연동 타이틀 페이드, 마스크 컨테이너 내 프로젝트 pill 목록
 export const MobileHome: React.FC = () => {
     const { openProject } = useProjectNavigation();
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({ container: containerRef });
     const [activeId, setActiveId] = useState<string | null>(null);
 
-    // Title fades out quickly as we scroll
+    // 스크롤 0→20%: 타이틀 페이드아웃
     const titleOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-
-    // Bottom text reveals as we click scroll further down
+    // 스크롤 50→80%: 하단 본문 페이드인
     const bottomTextOpacity = useTransform(scrollYProgress, [0.5, 0.8], [0, 1]);
 
     return (
         <div className="h-screen w-full relative">
 
-            {/* 제목 - 마스크 컨테이너 밖에서 그라데이션 영향 없음 */}
+            {/* 타이틀 — 마스크 컨테이너 밖, 스크롤에 따라 페이드아웃 */}
             <div className="fixed top-0 left-0 w-full p-6 pt-32 pointer-events-none z-0">
                 <motion.h1
                     style={{ opacity: titleOpacity }}
@@ -69,7 +71,7 @@ export const MobileHome: React.FC = () => {
                 </motion.h1>
             </div>
 
-            {/* 하단 본문 - 마스크 컨테이너 밖에서 그라데이션 영향 없음 */}
+            {/* 하단 본문 — 스크롤 후반에 페이드인 */}
             <motion.div
                 style={{ opacity: bottomTextOpacity }}
                 className="fixed bottom-10 left-6 max-w-[85%] z-20 pointer-events-none"
@@ -81,7 +83,7 @@ export const MobileHome: React.FC = () => {
                 </p>
             </motion.div>
 
-            {/* 소셜 아이콘 - 우측 하단 고정 */}
+            {/* 소셜 아이콘 — 우측 하단 고정 */}
             <div className="fixed bottom-10 right-6 z-20 flex gap-4 text-white/60">
                 <button className="hover:text-white transition-colors">
                     <Instagram className="w-5 h-5" />
@@ -93,7 +95,7 @@ export const MobileHome: React.FC = () => {
                 </button>
             </div>
 
-            {/* 마스크가 적용되는 스크롤 컨테이너 - 리스트만 포함 */}
+            {/* 마스크 스크롤 컨테이너 — 상하단 그라데이션 마스크로 pill 목록만 표시 */}
             <div
                 ref={containerRef}
                 className="h-screen w-full overflow-y-auto bg-transparent text-white relative"

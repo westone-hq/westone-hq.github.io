@@ -6,6 +6,7 @@ interface NewsCardProps {
     news: NewsItem;
 }
 
+// 뉴스 카드 — 호버 시 이미지 scale + grayscale 해제, 우측 상단 화살표 아이콘 표시
 export const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -45,7 +46,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
                     <div className="flex flex-col md:flex-row gap-2 md:gap-6 text-sm text-gray-500">
                         <span className="uppercase tracking-wider text-xs text-meta-purple/80">{news.category}</span>
                     </div>
-                    {/* Mobile Date */}
+                    {/* 모바일 날짜 */}
                     <span className="md:hidden text-xs font-medium tracking-widest uppercase text-gray-500">
                         {news.date}
                     </span>

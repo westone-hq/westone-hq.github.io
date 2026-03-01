@@ -1,20 +1,20 @@
 import type { Project, ProjectDetailContent } from '../../types';
 
-// Individual project imports
+// 개별 프로젝트 파일 export
 export { freeKioskProject, freeKioskDetails } from './westone-kiosk';
 export { ootdProject, ootdDetails } from './ootd';
 export { ballpangProject, ballpangDetails } from './ballpang';
 export { recyclerProject, recyclerDetails } from './recycler';
 export { AIToDoProject, AIToDoDetails } from './ai-todo';
 
-// Re-import for aggregation
+// 집계용 재import
 import { freeKioskProject, freeKioskDetails } from './westone-kiosk';
 import { ootdProject, ootdDetails } from './ootd';
 import { ballpangProject, ballpangDetails } from './ballpang';
 import { recyclerProject, recyclerDetails } from './recycler';
 import { AIToDoProject, AIToDoDetails } from './ai-todo';
 
-// Aggregated exports
+// 전체 프로젝트 배열 — 사이드바/모바일 목록 순서 결정
 export const PROJECTS: Project[] = [
     freeKioskProject,
     ootdProject,
@@ -23,6 +23,7 @@ export const PROJECTS: Project[] = [
     AIToDoProject,
 ];
 
+// 프로젝트 상세 레코드 — projectId로 접근
 export const PROJECT_DETAILS: Record<string, ProjectDetailContent> = {
     'westone-kiosk': freeKioskDetails,
     'ootd': ootdDetails,
@@ -31,6 +32,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetailContent> = {
     'ai-todo': AIToDoDetails,
 };
 
+// 호버 프로젝트 없을 때 표시할 기본값
 export const DEFAULT_PROJECT: Project = {
     id: 'default',
     name: 'Westone',

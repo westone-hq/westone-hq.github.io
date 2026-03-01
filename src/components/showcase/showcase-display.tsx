@@ -5,6 +5,7 @@ interface ShowcaseDisplayProps {
     activeProject: Project | null;
 }
 
+// 쇼케이스 디스플레이 — 프로젝트 foregroundType(mobile/tablet/desktop/image)에 따라 목업 렌더링
 export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject }) => {
     if (!activeProject || !activeProject.layoutConfig) return null;
 
@@ -13,7 +14,7 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
     const subTextColor = isLight ? 'text-white/80' : 'text-black/80';
     const config = activeProject.layoutConfig;
 
-    // Animation Class Mapping
+    // animationType → CSS 애니메이션 클래스 매핑
     const getAnimClass = (type?: string, element?: 'title' | 'desc' | 'img') => {
         const base = type || 'fade-up';
         if (element === 'img') return `animate-${base}-img`;
@@ -22,19 +23,18 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
     };
 
     return (
-        // Main container handles overall safety
         <div className="absolute inset-0 z-20 pointer-events-none w-full h-full overflow-hidden">
 
             <div key={activeProject.id} className="relative w-full h-full">
 
-                {/* --- IMAGE AREA --- */}
+                {/* 이미지 영역 — foregroundType에 따라 목업 형태 분기 */}
                 {activeProject.foregroundImage && activeProject.foregroundType !== 'none' && (
                     <div className={`z-0 ${config.imageWrapperStyles} ${activeProject.foregroundType === 'tablet' ? 'animate-soft-drop-img' : getAnimClass(config.enterAnimation, 'img')}`}>
 
-                        {/* Mobile Mockup */}
+                        {/* 모바일 목업 */}
                         {activeProject.foregroundType === 'mobile' && (
                             <div className="relative">
-                                {/* Triple Phone Layout */}
+                                {/* 3개 이상이면 트리플 폰 레이아웃 */}
                                 {activeProject.showcaseImages && activeProject.showcaseImages.length >= 3 ? (
                                     <div className="flex items-center -space-x-8 md:-space-x-12">
                                         {activeProject.showcaseImages.map((img, index) => (
@@ -53,7 +53,7 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
                                     </div>
                                 ) : (
                                     <>
-                                        {/* Secondary (Background) Mockup - Rendered First to be Behind */}
+                                        {/* 보조 목업 — 뒤에 배치 */}
                                         {activeProject.secondaryImage && (
                                             <div
                                                 className="absolute top-0 left-0 w-[280px] md:w-[340px] aspect-[9/19] bg-black rounded-[3rem] border-8 border-gray-900 shadow-2xl overflow-hidden transition-transform duration-700 ease-out"
@@ -73,7 +73,7 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
                                             </div>
                                         )}
 
-                                        {/* Main (Foreground) Mockup */}
+                                        {/* 메인 목업 — 전면 */}
                                         <div className="relative w-[280px] md:w-[340px] aspect-[9/19] bg-black rounded-[3rem] border-8 border-gray-900 shadow-2xl overflow-hidden z-10">
                                             <div className="absolute top-0 w-full h-8 bg-black z-20 rounded-b-xl mb-2 flex justify-center">
                                                 <div className="w-20 h-5 bg-black rounded-b-lg"></div>
@@ -90,10 +90,10 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
                             </div>
                         )}
 
-                        {/* Tablet Mockup */}
+                        {/* 태블릿 목업 */}
                         {activeProject.foregroundType === 'tablet' && (
                             <div className="relative">
-                                {/* Secondary (Background) Tablet */}
+                                {/* 보조 태블릿 — 뒤에 배치 */}
                                 {activeProject.secondaryImage && (
                                     <div
                                         className="absolute top-0 left-0 w-[380px] md:w-[500px] aspect-[4/3] bg-black rounded-[1.5rem] border-[6px] border-gray-800 shadow-2xl overflow-hidden transition-transform duration-700 ease-out"
@@ -111,7 +111,7 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
                                     </div>
                                 )}
 
-                                {/* Main (Foreground) Tablet */}
+                                {/* 메인 태블릿 — 전면 */}
                                 <div className="relative w-[380px] md:w-[500px] aspect-[4/3] bg-black rounded-[1.5rem] border-[6px] border-gray-800 shadow-2xl overflow-hidden z-10">
                                     <img
                                         src={activeProject.foregroundImage}
@@ -123,7 +123,7 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
                             </div>
                         )}
 
-                        {/* Desktop Mockup */}
+                        {/* 데스크탑 목업 */}
                         {activeProject.foregroundType === 'desktop' && (
                             <div className={`relative w-full max-w-5xl ${config.aspectRatio || 'aspect-video'} bg-black rounded-xl border-4 border-gray-800 shadow-2xl overflow-hidden`}>
                                 <div className="w-full h-6 bg-gray-900 flex items-center px-4 space-x-2">
@@ -139,7 +139,7 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
                             </div>
                         )}
 
-                        {/* Plain Image Card (No Device Frame) */}
+                        {/* 이미지 카드 (디바이스 프레임 없음) */}
                         {activeProject.foregroundType === 'image' && (
                             <div className="relative w-full h-full shadow-2xl rounded-lg overflow-hidden transition-transform hover:scale-[1.02] duration-500">
                                 <img
@@ -147,14 +147,13 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
                                     alt="Project Visual"
                                     className="w-full h-full object-cover rounded-lg"
                                 />
-                                {/* Subtle inner border/glare */}
                                 <div className="absolute inset-0 rounded-lg border border-white/10 pointer-events-none"></div>
                             </div>
                         )}
                     </div>
                 )}
 
-                {/* --- SCATTERED PHOTOS (Tablet only) --- */}
+                {/* 태블릿 타입의 분산 포토 — 3장 이상일 때 표시 */}
                 {activeProject.foregroundType === 'tablet' && activeProject.showcaseImages && activeProject.showcaseImages.length >= 3 && (
                     <div className="z-5 absolute top-[58%] left-[21%] animate-pop-in-img">
                         <div className="relative w-[500px] h-[280px]">
@@ -171,7 +170,7 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
                     </div>
                 )}
 
-                {/* --- TITLE --- */}
+                {/* 프로젝트 타이틀 */}
                 <div className={`z-10 ${config.titleStyles} ${activeProject.foregroundType === 'tablet' ? 'animate-converge' : getAnimClass(config.enterAnimation, 'title')}`}>
                     <h1
                         className={`font-serif text-5xl md:text-7xl lg:text-9xl leading-[0.9] tracking-tight ${textColor}`}
@@ -181,7 +180,7 @@ export const ShowcaseDisplay: React.FC<ShowcaseDisplayProps> = ({ activeProject 
                     </h1>
                 </div>
 
-                {/* --- DESCRIPTION & TAGS --- */}
+                {/* 설명 + 태그 */}
                 <div className={`z-10 ${config.descriptionStyles} ${activeProject.foregroundType === 'tablet' ? 'animate-cross-fade-delay' : getAnimClass(config.enterAnimation, 'desc')}`}>
                     <p
                         className={`text-lg md:text-xl font-medium leading-relaxed mb-4 ${subTextColor} whitespace-pre-line`}

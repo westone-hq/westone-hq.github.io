@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useCursor } from "@/context/cursor-context";
 
+// 히어로 비디오 섹션 — 호버 시 영상 컨테이너가 85%→100% 확장, 커서 play 타입으로 변경
 const HeroVideo = () => {
     const [isHovered, setIsHovered] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -10,7 +11,7 @@ const HeroVideo = () => {
     return (
         <section className="w-full py-24 md:py-32 bg-black text-white overflow-hidden flex flex-col items-center justify-center">
 
-            {/* Title - Outside the image, interactive entrance */}
+            {/* 타이틀 — 이미지 외부, 슬라이드인 애니메이션 */}
             <div className="w-full max-w-[90%] md:max-w-7xl px-4 md:px-12 mb-12 md:mb-16 z-10 relative">
                 <motion.h1
                     initial={{ y: 50, opacity: 0 }}
@@ -28,11 +29,9 @@ const HeroVideo = () => {
                 </motion.h1>
             </div>
 
-            {/* Video Container - Horizontal Expansion on Hover */}
+            {/* 비디오 컨테이너 — 호버 시 가로 확장, 커서 play로 전환 */}
             <motion.div
                 className="relative z-0 overflow-hidden"
-                // Initial width matches roughly a container, animates to full width
-                // We use vw to ensure we break out of parent constraints if any
                 animate={{
                     width: isHovered ? "100%" : "85%",
                     borderRadius: isHovered ? 0 : 12,
@@ -60,7 +59,7 @@ const HeroVideo = () => {
                         src="https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_25fps.mp4"
                         poster="https://picsum.photos/1920/1080?grayscale"
                     />
-                    {/* Subtle overlay that vanishes on hover */}
+                    {/* 오버레이 — 호버 시 사라짐 */}
                     <motion.div
                         className="absolute inset-0 bg-black/20 pointer-events-none"
                         animate={{ opacity: isHovered ? 0 : 0.4 }}

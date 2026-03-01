@@ -7,7 +7,7 @@ import { NEWS_ITEMS } from '@/data/constants/news';
 import { ArrowRightIcon } from '@/components/common/icons';
 import { useUI } from '@/context/ui-context';
 
-// Sub Components
+// href에 따라 적절한 페이지 이동 핸들러 호출하는 메뉴 링크
 const MenuLink: React.FC<{ item: MenuItem, index: number, onOpenContact: () => void, onOpenNews: () => void, onOpenWhatWeDo: () => void }> = ({ item, index, onOpenContact, onOpenNews, onOpenWhatWeDo }) => {
     const handleClick = (e: React.MouseEvent) => {
         if (item.href === '#contact') {
@@ -39,6 +39,7 @@ const MenuLink: React.FC<{ item: MenuItem, index: number, onOpenContact: () => v
     )
 }
 
+// 메뉴 내 프로젝트 pill — 호버/클릭 이벤트 상위 전달
 const MenuProjectPill: React.FC<{ project: Project; index: number; onHover: (id: string | null) => void; onClick: () => void }> = ({ project, index, onHover, onClick }) => {
     return (
         <motion.button
@@ -68,7 +69,7 @@ interface MenuSectionProps {
     onGoHome: () => void;
 }
 
-// Mobile News Card for horizontal carousel
+// 모바일 뉴스 카드 — 가로 스크롤 캐러셀용 카드
 const MobileNewsCard: React.FC<{ news: NewsItem; index: number }> = ({ news, index }) => (
     <motion.div
         className="relative flex-shrink-0 w-[200px] bg-white border border-gray-100 shadow-sm rounded-xl p-3 cursor-pointer"
@@ -98,7 +99,7 @@ const MobileNewsCard: React.FC<{ news: NewsItem; index: number }> = ({ news, ind
     </motion.div>
 );
 
-// Mobile Menu Layout
+// 모바일 메뉴 레이아웃 — 프로젝트 이미지 상단, 링크 중단, 뉴스 하단
 const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenContact, onOpenNews, onOpenWhatWeDo, onGoHome }) => {
     return (
         <motion.div
@@ -108,7 +109,7 @@ const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenC
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
         >
-            {/* Project Image - Top */}
+            {/* 프로젝트 이미지 — 상단 */}
             <div className="px-4 mb-6">
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -136,7 +137,7 @@ const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenC
                 </AnimatePresence>
             </div>
 
-            {/* Menu Links */}
+            {/* 메뉴 링크 */}
             <div className="px-6 mb-6">
                 <motion.a
                     href="#case-studies"
@@ -156,10 +157,9 @@ const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenC
                 ))}
             </div>
 
-            {/* Spacer to push news to bottom */}
             <div className="flex-1 min-h-[16px]" />
 
-            {/* News Carousel - Bottom */}
+            {/* 뉴스 캐러셀 — 하단 */}
             <div className="pb-6">
                 <div className="flex justify-between items-center mb-3 px-6">
                     <span className="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Latest News</span>
@@ -172,7 +172,7 @@ const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenC
                     {NEWS_ITEMS.map((news: NewsItem, i: number) => (
                         <MobileNewsCard key={news.id} news={news} index={i} />
                     ))}
-                    {/* 마지막 아이템 우측 여백 */}
+                    {/* 마지막 아이템 우측 여백 확보 */}
                     <div className="flex-shrink-0 w-3" />
                 </div>
             </div>
@@ -180,13 +180,14 @@ const MobileMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onOpenC
     );
 };
 
-// Desktop Menu Layout
+// 데스크탑 메뉴 레이아웃 — 3열 (링크+프로젝트 목록 / 이미지 / 뉴스)
 const DesktopMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onProjectHover, onOpenProject, onOpenContact, onOpenNews, onOpenWhatWeDo }) => {
     const newsScrollRef = useRef<HTMLDivElement>(null);
     const isDragging = useRef(false);
     const startY = useRef(0);
     const startScrollTop = useRef(0);
 
+    // 뉴스 영역 드래그 스크롤
     const handleMouseDown = (e: React.MouseEvent) => {
         isDragging.current = true;
         startY.current = e.clientY;
@@ -314,6 +315,7 @@ const DesktopMenuSection: React.FC<MenuSectionProps> = ({ displayProject, onProj
     );
 };
 
+// isDesktop 여부로 모바일/데스크탑 레이아웃 분기
 export const MenuSection: React.FC<MenuSectionProps> = (props) => {
     const { isDesktop } = useUI();
 

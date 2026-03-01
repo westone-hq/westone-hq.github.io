@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { PROJECTS } from '@/data/projects';
 import type { Project } from '@/types';
 
+// 개별 프로젝트 pill — 호버 시 상위 컴포넌트에 프로젝트 ID 전달
 const ProjectPill: React.FC<{ project: Project; index: number; onHover: (id: string | null) => void; onClick: (e?: React.MouseEvent) => void }> = ({ project, index, onHover, onClick }) => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -45,6 +46,7 @@ interface SidebarProjectsProps {
     onOpenProject: (id: string, e?: React.MouseEvent) => void;
 }
 
+// 좌측 고정 사이드바 — 프로젝트 pill 목록, 호버/클릭 이벤트 상위에 전달
 export const SidebarProjects: React.FC<SidebarProjectsProps> = ({ onHoverProject, onOpenProject }) => {
     return (
         <div className={`fixed left-4 md:left-8 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-30`}>

@@ -8,17 +8,20 @@ import { MobileHome } from '@/components/mobile';
 import { useUI } from '@/context/ui-context';
 import { useProjectNavigation, useHoverProject } from '@/hooks';
 
+// 홈 페이지 — 데스크탑: 히어로+쇼케이스+사이드바, 모바일: MobileHome
 export const HomePage: React.FC = () => {
   const { isDesktop, hoveredProjectId, setHoveredProjectId } = useUI();
   const { openProject } = useProjectNavigation();
   const activeProject = useHoverProject(hoveredProjectId);
 
+  // 모바일은 별도 레이아웃으로 분기
   if (!isDesktop) {
     return <MobileHome />;
   }
 
   return (
     <>
+      {/* 프로젝트 호버 시 ShowcaseDisplay, 기본은 HeroSection */}
       <AnimatePresence mode="wait">
         {hoveredProjectId && isDesktop && activeProject ? (
           <ShowcaseDisplay key="showcase" activeProject={activeProject} />
@@ -36,7 +39,7 @@ export const HomePage: React.FC = () => {
         onOpenProject={openProject}
       />
 
-      {/* 소셜 아이콘 - 우측 하단 고정 */}
+      {/* 소셜 아이콘 — 우측 하단 고정 */}
       <div className="fixed bottom-10 right-6 z-20 flex gap-4 text-white/60">
         <button className="hover:text-white transition-colors">
           <Instagram className="w-5 h-5" />

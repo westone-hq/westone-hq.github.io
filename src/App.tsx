@@ -14,6 +14,7 @@ import { HomePage, ProjectDetailPage, MenuPage } from '@/pages';
 import { PROJECTS, DEFAULT_PROJECT } from './data/projects';
 import { useProjectNavigation, useHoverProject } from '@/hooks';
 
+// 앱 레이아웃 — 배경, 네브바, 라우팅을 조합하는 루트 컴포넌트
 const AppContent: React.FC = () => {
   const {
     isScrolled,
@@ -26,49 +27,69 @@ const AppContent: React.FC = () => {
     isFullScreenPage,
   } = useUI();
 
-  const {
-    goToHome,
-    goToMenu,
-    goToContact,
-    goBack,
-  } = useProjectNavigation();
+  const { goToHome, goToMenu, goToContact, goBack } = useProjectNavigation();
 
   const activeProject = useHoverProject(hoveredProjectId);
 
-  // Toggle menu: go to menu or go back
+  // 현재 메뉴 페이지면 닫기, 아니면 열기
   const toggleMenu = () => {
-    if (isMenuPage) {
-      goBack();
-    } else {
-      goToMenu();
-    }
+    if (isMenuPage) goBack();
+    else goToMenu();
   };
 
+  // 호버 프로젝트 없으면 기본 프로젝트로 대체
   const menuDisplayProject = activeProject || DEFAULT_PROJECT;
 
-  // Determine background based on route
-  const showMenuBackground = isMenuPage;
   const showShowcaseBackground = isHomePage && !isMenuPage && isDesktop;
+
+  // 프로젝트 호버 시 NeuralNoise 페이드아웃
+  const neuralNoiseVisible = !hoveredProjectId || !isDesktop;
 
   return (
     <div className={`relative w-full ${isFullScreenPage ? 'h-screen overflow-hidden' : 'min-h-screen'} font-sans transition-colors duration-700 ${isMenuPage ? 'text-black' : 'text-white'}`}>
 
       {!isTouchDevice && <CustomCursor />}
 
-      {/* Z-Layer 0: Background - Fixed */}
+      {/* 배경 레이어 — z-0, fixed */}
       <div className={`${isFullScreenPage ? 'fixed' : 'absolute'} inset-0 z-0 bg-black`}>
-        <div className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${showMenuBackground ? 'opacity-100' : 'opacity-0'}`}>
-          <FluidBackground mode="light" />
-        </div>
 
-        <div className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${showMenuBackground || (hoveredProjectId && isDesktop) ? 'opacity-0' : 'opacity-100'}`}>
-          <NeuralNoiseBackground />
-        </div>
+        {/* 메뉴 페이지일 때만 마운트 */}
+        <AnimatePresence>
+          {isMenuPage && (
+            <motion.div
+              key="fluid-bg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.7 }}
+              className="absolute inset-0"
+            >
+              <FluidBackground mode="light" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 메뉴 페이지가 아닐 때만 마운트 */}
+        <AnimatePresence>
+          {!isMenuPage && (
+            <motion.div
+              key="neural-bg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: neuralNoiseVisible ? 1 : 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0"
+            >
+              <NeuralNoiseBackground />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {showShowcaseBackground && (
           <ShowcaseBackground projects={PROJECTS} activeId={hoveredProjectId} />
         )}
 
+        {/* 메뉴 페이지 — 호버 프로젝트 컬러 오버레이 */}
         <AnimatePresence>
           {isMenuPage && (
             <motion.div
@@ -83,7 +104,7 @@ const AppContent: React.FC = () => {
         </AnimatePresence>
       </div>
 
-      {/* Navbar - Fixed */}
+      {/* 네브바 — fixed */}
       <Navbar
         isMenuOpen={isMenuPage}
         toggleMenu={toggleMenu}
@@ -92,7 +113,7 @@ const AppContent: React.FC = () => {
         onLogoClick={goToHome}
       />
 
-      {/* Main Content */}
+      {/* 메인 콘텐츠 — 라우트 */}
       <div className={`relative z-10 ${isFullScreenPage ? 'h-screen' : 'min-h-screen'}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -108,6 +129,7 @@ const AppContent: React.FC = () => {
   );
 };
 
+// 전역 프로바이더 래핑 — CursorProvider > Router > UIProvider 순서
 const App: React.FC = () => {
   return (
     <CursorProvider>

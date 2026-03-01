@@ -7,11 +7,12 @@ interface DetailHeaderProps {
     deliverables: string;
 }
 
+// 프로젝트 상세 헤더 — 마운트 후 grid-rows 트랜지션으로 슬라이드 인
 export const DetailHeader: React.FC<DetailHeaderProps> = ({ title, type, stage, deliverables }) => {
     const [isRevealed, setIsRevealed] = useState(false);
 
+    // 마운트 100ms 후 애니메이션 트리거
     useEffect(() => {
-        // Trigger animation shortly after mount
         const timer = setTimeout(() => {
             setIsRevealed(true);
         }, 100);
@@ -33,12 +34,12 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({ title, type, stage, 
             ${isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}
           `}
                 >
-                    {/* Main Title */}
+                    {/* 프로젝트 타이틀 */}
                     <h1 className="text-[3.5rem] sm:text-[5rem] md:text-[8rem] lg:text-[12rem] leading-[0.85] font-serif mb-12 md:mb-24 break-words">
                         {title}
                     </h1>
 
-                    {/* Project Details Grid */}
+                    {/* 프로젝트 메타 정보 3열 그리드 */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 border-t border-white/20 pt-8">
                         <div>
                             <h3 className="text-lg font-semibold mb-1 text-white/80">Project Type</h3>

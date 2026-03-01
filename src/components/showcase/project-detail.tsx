@@ -19,6 +19,7 @@ interface ProjectDetailProps {
     onNextProject: () => void;
 }
 
+// 프로젝트 상세 — 헤더/히어로/인트로/비전/코어/마퀴/스티키/디스커버리/스탯/넥스트케이스 섹션 조합
 export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProject, onNextProject }) => {
     return (
         <motion.div
@@ -29,7 +30,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
             className="bg-black min-h-screen text-white font-sans selection:bg-purple-500 selection:text-white pb-0 relative z-40 w-full"
         >
 
-            {/* Header & Hero Image */}
+            {/* 헤더 + 히어로 이미지 */}
             <DetailHeader
                 title={details.hero.title}
                 type={details.hero.type}
@@ -45,7 +46,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                 />
             </div>
 
-            {/* Introduction - Spotlight */}
+            {/* 인트로 — 스포트라이트 효과 */}
             <section className="pt-8 pb-4 md:pt-12 md:pb-6 bg-black">
                 <div className="max-w-[1400px] mx-auto px-6 md:px-12">
                     <ScrollReveal className="mb-4">
@@ -64,14 +65,14 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                 </div>
             </section>
 
-            {/* The Vision - ScrollProgressiveReveal */}
+            {/* 비전 — 스크롤 진행도에 따라 이미지 공개 */}
             <ScrollProgressiveReveal
                 image1={details.media.visionGrid1}
                 image2={details.media.visionGrid2}
                 title={details.vision.heading}
             />
 
-            {/* Core Pillars */}
+            {/* 코어 필라 — 인터랙티브 피처 스트립 */}
             <section className="py-16 md:py-32 bg-black">
                 <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-16">
                     <ScrollReveal>
@@ -84,12 +85,12 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                 </ScrollReveal>
             </section>
 
-            {/* Middle Marquee */}
+            {/* 중간 마퀴 */}
             <section className="py-12">
                 <Marquee text={details.marquee} />
             </section>
 
-            {/* Visual Identity - StickyScrollSection */}
+            {/* 비주얼 아이덴티티 — 스티키 스크롤 */}
             <StickyScrollSection
                 heading={details.aura.heading}
                 text={details.vision.text}
@@ -100,7 +101,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                 ]}
             />
 
-            {/* Discovery Section */}
+            {/* 디스커버리 — 타이포그래픽 목록 */}
             <section className="pt-16 pb-10 md:pt-32 md:pb-16 bg-neutral-900">
                 <div className="max-w-[1400px] mx-auto px-6 md:px-12">
                     <ScrollReveal className="mb-12 md:mb-32">
@@ -120,8 +121,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                 <InteractiveTypographicList items={details.discovery.items} />
             </section>
 
-
-            {/* Stats / Impact Section */}
+            {/* 임팩트 스탯 3열 */}
             <section className="py-16 md:py-32 px-6 md:px-12 max-w-[1400px] mx-auto">
                 <ScrollReveal>
                     <h3 className="text-3xl font-serif mb-12 md:mb-24">Immediate disruption</h3>
@@ -152,9 +152,9 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                 </div>
             </section>
 
-            {/* NEXT CASE FOOTER */}
+            {/* 다음 케이스 스터디 푸터 — 호버 시 배경 이미지 + 타이틀 트래킹 확장 */}
             <section className="relative h-[80vh] w-full bg-neutral-900 border-t border-white/10 overflow-hidden group">
-                {/* Background Image - 모바일: 기본 표시 / 데스크탑: 호버 시 표시 */}
+                {/* 배경 이미지 — 모바일: 기본 표시, 데스크탑: 호버 시 표시 */}
                 <div className="absolute inset-0 opacity-30 md:opacity-0 md:group-hover:opacity-40 transition-opacity duration-700 ease-in-out z-0">
                     {(() => {
                         const nextDetails = PROJECT_DETAILS[nextProject.id];
@@ -176,7 +176,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                     </div>
                 </div>
 
-                {/* Standard Footer Links inside the Next Case area */}
+                {/* 소셜 아이콘 — 우측 하단 */}
                 <div className="absolute bottom-0 left-0 right-0 p-8 flex justify-end items-end z-30 mix-blend-difference text-white">
                     <div className="flex gap-5">
                         <button className="hover:text-white/70 transition-colors">

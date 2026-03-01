@@ -10,6 +10,7 @@ import { ProcessGrid } from '@/components/sections/services';
 import { CinematicFrame } from '@/components/interactive/animations';
 import { ImpactStats } from '@/components/stats';
 
+// What We Do 페이지 — 슬라이드인 애니메이션으로 진입, 서비스 관련 섹션 전체 조합
 const WhatWeDo: React.FC = () => {
     return (
         <motion.div
@@ -20,31 +21,14 @@ const WhatWeDo: React.FC = () => {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
             <div className="w-full pt-20">
-                {/* 1. Hero Video with Play Interaction */}
                 <HeroVideo />
-
-                {/* 2. Horizontal Scroll Gallery */}
                 <HorizontalScroll />
-
-                {/* 3. Hover Details Section */}
                 <ServiceCards />
-
-                {/* 4. Detailed Service Categories List */}
                 <ServiceCategories />
-
-                {/* 5. Marquee Animation */}
                 <Marquee />
-
-                {/* 6. Draggable Carousel */}
                 <DraggableCarousel />
-
-                {/* 7. Process Grid with Hover */}
                 <ProcessGrid />
-
-                {/* 8. Scroll Interaction */}
                 <CinematicFrame />
-
-                {/* 9. Final Stats */}
                 <ImpactStats />
             </div>
         </motion.div>
