@@ -70,6 +70,7 @@ export interface ProjectDetailContent {
     visionGrid1: string;
     visionGrid2: string;
     auraBento: string;
+    pointerImages?: string[];
   };
   hero: {
     title: string;

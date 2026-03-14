@@ -128,11 +128,27 @@ ${formData.message}`
                         </p>
                     </div>
 
-                    <div className="mt-12 pt-8 border-t border-neutral-800">
-                        <p className="text-white font-medium mb-2">Direct Contact</p>
-                        <a href="mailto:westone251113@gmail.com" className="text-neutral-500 hover:text-white transition-colors duration-300">
-                            westone251113@gmail.com
-                        </a>
+                    <div className="mt-12 pt-8 border-t border-neutral-800 space-y-6">
+                        <div>
+                            <p className="text-white font-medium mb-2">Direct Contact</p>
+                            <a href="mailto:westone251113@gmail.com" className="text-neutral-500 hover:text-white transition-colors duration-300">
+                                westone251113@gmail.com
+                            </a>
+                        </div>
+                        <div>
+                            <p className="text-white font-medium mb-2">외주 의뢰</p>
+                            <a
+                                href="https://kmong.com/gig/747278"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 text-neutral-500 hover:text-white transition-colors duration-300 group"
+                            >
+                                크몽에서 바로 의뢰하기
+                                <svg className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
