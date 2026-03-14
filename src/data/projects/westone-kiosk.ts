@@ -1,16 +1,23 @@
 import type { Project, ProjectDetailContent } from '../../types';
 
-import menuCreate from '../../assets/freekiosk/menu-create.png';
-import posDetail from '../../assets/freekiosk/pos-detail.png';
-import order3 from '../../assets/freekiosk/order3.png';
-import tableSet from '../../assets/freekiosk/table-set.png';
-import checkPage from '../../assets/freekiosk/check-page.png';
-
-import kitchen1Plus from '../../assets/freekiosk/kitchen1-plus.png';
-import usePos from '../../assets/freekiosk/use-pos.jpg';
-import useQr from '../../assets/freekiosk/use-qr.jpg';
-import pilot from '../../assets/freekiosk/pilot.jpg';
 import hero from '../../assets/freekiosk/hero.png';
+
+import scrollview1 from '../../assets/freekiosk/scrollview-1.jpg';
+import scrollview2 from '../../assets/freekiosk/scrollview-2.jpg';
+
+import corepillars1 from '../../assets/freekiosk/corepillars-1.png';
+import corepillars2 from '../../assets/freekiosk/corepillars-2.png';
+import corepillars3 from '../../assets/freekiosk/corepillars-3.png';
+import corepillars4 from '../../assets/freekiosk/corepillars-4.png';
+
+import pointerview1 from '../../assets/freekiosk/pointerview-1.png';
+import pointerview2 from '../../assets/freekiosk/pointerview-2.png';
+import pointerview3 from '../../assets/freekiosk/pointerview-3.png';
+
+import discovery1 from '../../assets/freekiosk/discovery-1.png';
+import discovery2 from '../../assets/freekiosk/discovery-2.png';
+import discovery3 from '../../assets/freekiosk/discovery-3.png';
+import discovery4 from '../../assets/freekiosk/discovery-4.png';
 
 export const freeKioskProject: Project = {
     id: 'westone-kiosk',
@@ -19,12 +26,12 @@ export const freeKioskProject: Project = {
     description: '소상공인을 위한 무료 셀프 키오스크\n주방 디스플레이 · POS 통합 태블릿 앱',
     year: '2025',
     tags: ['Tablet App', 'Flutter', 'Firebase', 'POS'],
-    image: pilot,
+    image: hero,
     color: '#2563EB',
     bgImage: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2560&auto=format&fit=crop',
-    foregroundImage: menuCreate,
-    secondaryImage: posDetail,
-    showcaseImages: [pilot, usePos, useQr],
+    foregroundImage: corepillars1,
+    secondaryImage: corepillars2,
+    showcaseImages: [hero, scrollview1, scrollview2],
     foregroundType: 'tablet',
     theme: 'dark',
     accentColor: '#2563EB',
@@ -40,9 +47,10 @@ export const freeKioskDetails: ProjectDetailContent = {
     id: 'westone-kiosk',
     media: {
         hero: hero,
-        visionGrid1: kitchen1Plus,
-        visionGrid2: checkPage,
-        auraBento: tableSet,
+        visionGrid1: scrollview1,
+        visionGrid2: scrollview2,
+        auraBento: pointerview1,
+        pointerImages: [pointerview1, pointerview2, pointerview3],
     },
     hero: {
         title: 'FreeKiosk',
@@ -74,10 +82,10 @@ QR 스캔 한 번으로
     },
     discovery: {
         items: [
-            { img: order3, title: '셀프 주문' },
-            { img: posDetail, title: 'POS 결제' },
-            { img: menuCreate, title: '메뉴 관리' },
-            { img: tableSet, title: '테이블 설정' }
+            { img: discovery1, title: '셀프 주문' },
+            { img: discovery2, title: 'POS 결제' },
+            { img: discovery3, title: '메뉴 관리' },
+            { img: discovery4, title: '테이블 설정' }
         ]
     },
     corePillars: [
@@ -85,25 +93,25 @@ QR 스캔 한 번으로
             number: '01',
             title: '셀프 주문',
             description: '테이블 QR 코드 스캔 한 번으로 메뉴 탐색부터 주문·결제까지 고객이 직접 처리합니다.',
-            image: order3,
+            image: corepillars1,
         },
         {
             number: '02',
             title: '주방 디스플레이',
             description: '주문이 들어오는 즉시 주방 화면에 표시됩니다. 접수·조리·완료 상태를 실시간으로 업데이트합니다.',
-            image: kitchen1Plus,
+            image: corepillars2,
         },
         {
             number: '03',
             title: 'POS 결제',
             description: '테이블별 주문 내역 확인, 부분 결제, 합산 결제까지 매장 운영에 필요한 모든 결제 시나리오를 지원합니다.',
-            image: posDetail,
+            image: corepillars3,
         },
         {
             number: '04',
             title: '메뉴 관리',
             description: '관리자 대시보드에서 메뉴·카테고리·테이블을 설정하고 매출 리포트를 한곳에서 확인합니다.',
-            image: menuCreate,
+            image: corepillars4,
         },
     ],
     stats: {

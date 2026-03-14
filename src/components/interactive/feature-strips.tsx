@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 // 인터랙티브 피처 스트립 — 모바일: 아코디언 토글, 데스크탑: 호버 시 스트립 확장
 export const InteractiveFeatureStrips: React.FC<{
@@ -58,53 +58,42 @@ export const InteractiveFeatureStrips: React.FC<{
                 ))}
             </div>
 
-            {/* 데스크탑: 기존 인터랙티브 스트립 */}
+            {/* 데스크탑: 인터랙티브 스트립 */}
             <div className="hidden md:flex w-full h-[800px] gap-2 overflow-hidden">
                 {items.map((item, index) => (
                     <motion.div
                         key={index}
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
-                        animate={{
-                            flex: hoveredIndex === index ? 3 : 1,
-                        }}
+                        animate={{ flex: hoveredIndex === index ? 3 : 1 }}
                         transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                         className="relative h-full overflow-hidden cursor-pointer group"
                     >
-                        {/* 배경 이미지 — 호버 시 grayscale 해제 + 스케일 업 */}
-                        <motion.div
-                            animate={{ scale: hoveredIndex === index ? 1.1 : 1 }}
-                            transition={{ duration: 0.8 }}
-                            className="absolute inset-0"
-                        >
+                        {/* 배경 이미지 — 스케일 고정, 호버 시 grayscale 해제 */}
+                        <div className="absolute inset-0">
                             <img
                                 src={item.image}
                                 alt={item.title}
                                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                             />
-                            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
-                        </motion.div>
+                        </div>
+
+                        {/* 하단 그라데이션 — 호버 시 텍스트 영역 선명하게 */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-50 group-hover:opacity-90 transition-opacity duration-500" />
 
                         {/* 콘텐츠 오버레이 */}
                         <div className="absolute inset-0 p-8 flex flex-col justify-between z-10">
-                            <div className="flex justify-between items-start">
-                                <span className="text-xs font-mono text-white/50 group-hover:text-white transition-colors">{item.number}</span>
-                                <motion.div
-                                    animate={{ rotate: hoveredIndex === index ? 45 : 0 }}
-                                    className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                >
-                                    <ArrowUpRight className="w-5 h-5" />
-                                </motion.div>
-                            </div>
+                            <span className="text-xs font-mono text-white/50 group-hover:text-white transition-colors">{item.number}</span>
 
                             <div className="space-y-4">
                                 <h4 className="text-5xl font-serif leading-none">{item.title}</h4>
                                 <AnimatePresence>
                                     {hoveredIndex === index && (
                                         <motion.p
-                                            initial={{ opacity: 0, y: 20 }}
+                                            initial={{ opacity: 0, y: 16 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: 10 }}
+                                            exit={{ opacity: 0, y: 8 }}
+                                            transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
                                             className="text-white/70 text-base max-w-md leading-relaxed"
                                         >
                                             {item.description}

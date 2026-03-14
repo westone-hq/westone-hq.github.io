@@ -2,7 +2,6 @@ import React from 'react';
 import { DetailHeader } from "@/components/layout";
 import { ScrollReveal } from "@/components/interactive/scroll";
 import { Marquee } from "@/components/interactive/animations";
-import { SpotlightReveal } from '@/components/interactive/spotlight';
 import { ScrollProgressiveReveal } from '@/components/interactive/progressive-reveal';
 import { InteractiveFeatureStrips } from '@/components/interactive/feature-strips';
 import { StickyScrollSection } from '@/components/interactive/sticky-scroll';
@@ -19,7 +18,7 @@ interface ProjectDetailProps {
     onNextProject: () => void;
 }
 
-// 프로젝트 상세 — 헤더/히어로/인트로/비전/코어/마퀴/스티키/디스커버리/스탯/넥스트케이스 섹션 조합
+// 프로젝트 상세 — hero/title/scrollview/corepillars/pointerview 섹션 조합
 export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProject, onNextProject }) => {
     return (
         <motion.div
@@ -30,7 +29,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
             className="bg-black min-h-screen text-white font-sans selection:bg-purple-500 selection:text-white pb-0 relative z-40 w-full"
         >
 
-            {/* 헤더 + 히어로 이미지 */}
+            {/* hero */}
             <DetailHeader
                 title={details.hero.title}
                 type={details.hero.type}
@@ -46,13 +45,13 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                 />
             </div>
 
-            {/* 인트로 — 스포트라이트 효과 */}
+            {/* title — 스포트라이트 효과, 스크롤에 따라 하단 내용 점진적으로 밝혀짐 */}
             <section className="pt-8 pb-4 md:pt-12 md:pb-6 bg-black">
                 <div className="max-w-[1400px] mx-auto px-6 md:px-12">
                     <ScrollReveal className="mb-4">
                         <span className="block text-sm font-semibold uppercase tracking-wider text-purple-400">Introduction</span>
                     </ScrollReveal>
-                    <SpotlightReveal size={420} className="rounded-3xl">
+                    <div className="rounded-3xl">
                         <div className="py-16 md:py-32 px-8 md:px-24 text-center">
                             <h2 className="text-3xl md:text-5xl lg:text-7xl font-serif leading-[1.1] text-white/90 whitespace-pre-line mb-10">
                                 {details.intro.text}
@@ -61,18 +60,18 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                                 {details.vision.text}
                             </p>
                         </div>
-                    </SpotlightReveal>
+                    </div>
                 </div>
             </section>
 
-            {/* 비전 — 스크롤 진행도에 따라 이미지 공개 */}
+            {/* scrollview — 스크롤 진행도에 따라 이미지 공개 */}
             <ScrollProgressiveReveal
                 image1={details.media.visionGrid1}
                 image2={details.media.visionGrid2}
                 title={details.vision.heading}
             />
 
-            {/* 코어 필라 — 인터랙티브 피처 스트립 */}
+            {/* corepillars — 인터랙티브 피처 스트립 */}
             <section className="py-16 md:py-32 bg-black">
                 <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-16">
                     <ScrollReveal>
@@ -90,15 +89,15 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                 <Marquee text={details.marquee} />
             </section>
 
-            {/* 비주얼 아이덴티티 — 스티키 스크롤 */}
+            {/* pointerview — 스티키 스크롤 */}
             <StickyScrollSection
                 heading={details.aura.heading}
-                text={details.vision.text}
-                images={[
-                    details.media.auraBento,
-                    details.media.visionGrid1,
-                    details.media.visionGrid2,
-                ]}
+                text={details.aura.text}
+                images={
+                    details.media.pointerImages && details.media.pointerImages.length > 0
+                        ? details.media.pointerImages
+                        : [details.media.auraBento, details.media.visionGrid1, details.media.visionGrid2]
+                }
             />
 
             {/* 디스커버리 — 타이포그래픽 목록 */}
@@ -152,9 +151,8 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                 </div>
             </section>
 
-            {/* 다음 케이스 스터디 푸터 — 호버 시 배경 이미지 + 타이틀 트래킹 확장 */}
+            {/* 다음 케이스 스터디 푸터 */}
             <section className="relative h-[80vh] w-full bg-neutral-900 border-t border-white/10 overflow-hidden group">
-                {/* 배경 이미지 — 모바일: 기본 표시, 데스크탑: 호버 시 표시 */}
                 <div className="absolute inset-0 opacity-30 md:opacity-0 md:group-hover:opacity-40 transition-opacity duration-700 ease-in-out z-0">
                     {(() => {
                         const nextDetails = PROJECT_DETAILS[nextProject.id];
@@ -176,7 +174,6 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({ details, nextProje
                     </div>
                 </div>
 
-                {/* 소셜 아이콘 — 우측 하단 */}
                 <div className="absolute bottom-0 left-0 right-0 p-8 flex justify-end items-end z-30 mix-blend-difference text-white">
                     <div className="flex gap-5">
                         <button className="hover:text-white/70 transition-colors">
